@@ -5,7 +5,17 @@
  */
 function booking_theme($existing, $type, $theme, $path) {
   return [
-    'main' => [
+    'booking' => [
+      'variables' => [
+        'content' => 'from hook module',
+      ],
+    ],
+    'admin' => [
+      'variables' => [
+        'content' => 'from hook module',
+      ],
+    ],
+    'service' => [
       'variables' => [
         'content' => 'from hook module',
       ],
