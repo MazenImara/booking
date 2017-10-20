@@ -1,0 +1,151 @@
+
+msgid "Add Quiz"
+msgstr "Lägg till Webbkurs"
+
+msgid "Send result by email"
+msgstr "Skicka resultat via e-post"
+
+msgid "Show result after quiz"
+msgstr "Visa resultat efter Webbkurs"
+
+msgid "Quiz Image"
+msgstr "Webbkurs Bild"
+
+msgid "Choose File"
+msgstr "Välj FIL"
+
+msgid "No file chosen"
+msgstr "Ingen fil vald"
+
+msgid "Questions"
+msgstr "Frågor"
+
+msgid "Add question"
+msgstr "Lägg till fråga"
+
+msgid "Quiz Title"
+msgstr "Webbkurs Titel"
+
+msgid "User Answers"
+msgstr "Användarens Svar"
+
+msgid "Correct Answers"
+msgstr "Korrekta Svar"
+
+msgid "Quiz Result"
+msgstr "Webbkurs Resultat"
+
+msgid "Choose"
+msgstr "Välja"
+
+msgid "Quiz Description"
+msgstr "Webbkurs Beskrivning"
+
+msgid "Success percent %"
+msgstr "Framgångsrika procent %"
+
+
+msgid "Email or Unique Name"
+msgstr "E-post eller Unikt Namn"
+
+msgid "Unique"
+msgstr "Unik"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Inactive"
+msgstr "Inaktiv"
+
+msgid "Question Image"
+msgstr "Fråga Bild"
+
+msgid "Question"
+msgstr "Fråga"
+
+msgid "Users"
+msgstr "Användare"
+
+msgid "Quiz Users"
+msgstr "Webbkurs Användare"
+
+msgid "Assigned Quizes"
+msgstr "Tilldelade Webbkurser"
+
+msgid "Unassigned Quizes"
+msgstr "Otilldelade Webbkurser"
+
+msgid "Shop"
+msgstr "Butik/Återförsäljare"
+
+msgid "Quiz"
+msgstr "Webbkurs"
+
+msgid "Quizzes"
+msgstr "Webbkurser"
+
+msgid "Quizes"
+msgstr "Webbkurser"
+
+msgid "Quiz Module"
+msgstr "Webbkurs"
+
+msgid "Manage Quiz Users"
+msgstr "Hantera Webbkurs-användare"
+
+msgid "Manage Quizzes"
+msgstr "Hantera Webbkurser"
+
+msgid "Quiz Results"
+msgstr "Webbkurs resultat"
+
+msgid "Start Quiz"
+msgstr "Starta Webbkurs"
+
+msgid "Edit Question"
+msgstr "Redigera Fråga"
+
+msgid "Add answer"
+msgstr "Lägg till svar"
+
+msgid "Add user"
+msgstr "Lägg till användare"
+
+msgid "Success"
+msgstr "Succe"
+
+msgid "Quiz user"
+msgstr "Webb användare"
+
+msgid "Change the correct answer"
+msgstr "Ändra rätt svar"
+
+msgid "Delete answer"
+msgstr "Ta bort svar"
+
+msgid "Answer"
+msgstr "Svar"
+
+msgid "Add, edit and delete quizzes"
+msgstr "Skapa, ändra och ta bort quizzes."
+
+msgid "Create, modify and delete the actual quizzes."
+msgstr "Skapa, ändra och ta bort de faktiska quizzen."
+
+msgid "Add, edit and delete quiz users."
+msgstr "Skapa, ändra och ta bort quizzanvändare."
+
+msgid "Create, modify and delete the users for quizzes. Also assigning users to quizzes."
+msgstr "Skapa, ändra och ta bort användarna för quizzes. Även lägga till användare till quizzes."
+
+msgid "View and delete quiz results."
+msgstr "Visa och ta bort quizzresultat."
+
+msgid "View and delete all quiz results."
+msgstr "Visa och ta bort alla reusltat för quizzes."
+
+msgid "Take a quiz."
+msgstr "Genomföra ett quiz."
+
+msgid "Log in to an already quiz user (not a Drupal user) and take a quiz."
+msgstr "Logga in som en redan existerande quizzanvvändare (inte en Drupalanvändare) och genomföra ett quiz."

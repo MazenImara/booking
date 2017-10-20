@@ -1,0 +1,317 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function conventus_ajax_statistics_install() {
+  updateSchema();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function conventus_ajax_statistics_uninstall() {
+  \Drupal::configFactory()->getEditable('booking.settings')->delete();
+}
+
+/**
+ * Mandatory initial run of node_access_rebuild() Drupal core function.
+ */
+function conventus_ajax_statistics_update_8001() {
+  updateSchema();
+}
+
+function updateSchema()
+{
+
+}
+
+function booking_schema() {
+  if (!db_table_exists('booking_book')) {
+    $schema['booking_book'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE
+        ],
+        'slotId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'serviceId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'clientId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_client')) {
+    $schema['booking_client'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'name' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'email' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'phone' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'password' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_day')) {
+    $schema['booking_day'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'day' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'weekId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'status' => [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => TRUE,
+          'default' => 1,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_extra_detail')) {
+    $schema['booking_extra_detail'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'objId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'objType' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'title' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'value' => [
+          'type' => 'text',
+          'size' => 'medium',
+          'not null' => TRUE,
+        ],
+        'type' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_server')) {
+    $schema['booking_server'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'title' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'name' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'email' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'phone' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'password' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'status' => [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => TRUE,
+          'default' => 1,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_service')) {
+    $schema['booking_service'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'title' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_service_server')) {
+    $schema['booking_service_server'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE
+        ],
+        'serviceId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'serverId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_slot')) {
+    $schema['booking_slot'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE
+        ],
+        'period' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'dayId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'status' => [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => TRUE,
+          'default' => 1,
+        ],
+        'serverId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'startTime' => [
+          'type' => 'varchar',
+          'mysql_type' => 'timestamp',
+          'not null' => FALSE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_wait')) {
+    $schema['booking_wait'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE
+        ],
+        'clientId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'slotId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_week')) {
+    $schema['booking_week'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'week' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'serviceId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'year' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+  return $schema;
+}

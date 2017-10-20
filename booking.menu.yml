@@ -1,0 +1,6 @@
+conventus_ajax_statistics.settings:
+  title: 'Conventus ajax statistics'
+  description: 'Configure the period of traking views.'
+  route_name: ajax_statistics.settings
+  parent: system.admin_config_services
+  weight: -15

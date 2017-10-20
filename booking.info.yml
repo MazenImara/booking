@@ -1,0 +1,6 @@
+name: 'booking'
+description: 'Custom module for booking'
+type: module
+package: Storleden
+core: 8.x
+configure: booking.settings

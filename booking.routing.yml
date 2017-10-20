@@ -1,0 +1,7 @@
+booking.main:
+  path: '/booking'
+  defaults:
+    _controller: '\Drupal\booking\Controller\bookingController::main'
+    _title: 'booking'
+  requirements:
+    _permission: 'manage booking'

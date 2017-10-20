@@ -1,0 +1,10 @@
+booking_lib:
+  version: 1.x
+  js:
+    js/booking.js: {}
+    js/angular.min.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal.ajax
+    - core/drupalSettings

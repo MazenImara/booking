@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function booking_theme($existing, $type, $theme, $path) {
+  return [
+    'main' => [
+      'variables' => [
+        'content' => 'from hook module',
+      ],
+    ],
+  ];
+}
+
