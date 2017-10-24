@@ -1,4 +1,7 @@
 
+
+function bookingCalendar(data) {
+
     /*
 Full tutorial on how to use the Calendar Javascript Library
 
@@ -376,138 +379,10 @@ var organizer = new Organizer("organizerContainer", calendar);
 currentDay = calendar.date.getDate(); // used this in order to make anyday today depending on the current today
 
 // my best way of organizing data, maybe that can be the outcome of joining multiple tables in the database and then parsing them in such a manner, easier for the person to push use a date and the events of it
-data = {
-  years: [
-    {
-      int: 1999,
-      months: [
-        {
-          int: 4,
-          days: [
-            {
-              int: 28,
-              events: [
-                {
-                  startTime: "6:00",
-                  endTime: "6:30",
-                  mTime: "pm",
-                  text: "<span id='5'></span> typeWeirdo was born"
-                },
-                {
-                  startTime: "6:00",
-                  endTime: "6:30",
-                  mTime: "pm",
-                  text: "Weirdo was born"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      int: (new Date().getFullYear()),
-      months: [
-        {
-          int: (new Date().getMonth() + 1),
-          days: [
-            {
-              int: (new Date().getDate()),
-              events: [
-                {
-                  startTime: "6:00",
-                  endTime: "17:00",
-                  mTime: " ",
-                  text: "<button id='5'>hello</button>This is scheduled to show today, anyday."
-                },
-                {
-                  startTime: "5:45",
-                  endTime: "7:15",
-                  mTime: "pm",
-                  text: "WIP Library"
-                },
-                {
-                  startTime: "10:00",
-                  endTime: "11:00",
-                  mTime: "pm",
-                  text: "Probably won't fix that (time width)"
-                },
-                {
-                  startTime: "8:00",
-                  endTime: "9:00",
-                  mTime: "pm",
-                  text: "Next spam is for demonstration purposes only"
-                },
-                {
-                  startTime: "5:45",
-                  endTime: "7:15",
-                  mTime: "pm",
-                  text: "WIP Library"
-                },
-                {
-                  startTime: "10:00",
-                  endTime: "11:00",
-                  mTime: "pm",
-                  text: "Probably won't fix that (time width)"
-                },
-                {
-                  startTime: "5:45",
-                  endTime: "7:15",
-                  mTime: "pm",
-                  text: "WIP Library"
-                },
-                {
-                  startTime: "10:00",
-                  endTime: "11:00",
-                  mTime: "pm",
-                  text: "Probably won't fix that (time width)"
-                },
-                {
-                  startTime: "5:45",
-                  endTime: "7:15",
-                  mTime: "pm",
-                  text: "WIP Library"
-                },
-                {
-                  startTime: "10:00",
-                  endTime: "11:00",
-                  mTime: "pm",
-                  text: "Probably won't fix that (time width)"
-                },
-                {
-                  startTime: "5:45",
-                  endTime: "7:15",
-                  mTime: "pm",
-                  text: "WIP Library"
-                },
-                {
-                  startTime: "10:00",
-                  endTime: "11:00",
-                  mTime: "pm",
-                  text: "Probably won't fix that (time width)"
-                },
-                {
-                  startTime: "5:45",
-                  endTime: "7:15",
-                  mTime: "pm",
-                  text: "WIP Library"
-                },
-                {
-                  startTime: "10:00",
-                  endTime: "11:00",
-                  mTime: "pm",
-                  text: "Probably won't fix that (time width)"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
+
 
 function showEvents() {
+  console.log(data);
   theYear = -1, theMonth = -1, theDay = -1;
   for (i = 0; i < data.years.length; i++) {
     if (calendar.date.getFullYear() == data.years[i].int) {
@@ -540,3 +415,5 @@ organizer.setOnClickListener('day-slider', function () { showEvents(); console.l
 organizer.setOnClickListener('days-blocks', function () { showEvents(); console.log("Day block clicked"); }, null);
 organizer.setOnClickListener('month-slider', function () { showEvents(); console.log("Month back slider clicked"); }, function () { showEvents(); console.log("Month next slider clicked"); });
 organizer.setOnClickListener('year-slider', function () { showEvents(); console.log("Year back slider clicked"); }, function () { showEvents(); console.log("Year next slider clicked"); });
+
+}

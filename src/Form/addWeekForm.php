@@ -25,7 +25,7 @@ class addWeekForm extends FormBase {
     public function buildForm(array $form, FormStateInterface $form_state, $serviceId = NULL) {
         $form['quantity'] = [
             '#type'        => 'textfield',
-            '#value' => 1,
+            //'#value' => 1,
             '#placeholder' => t('Quantity'),
             '#description' => t('Quantity'),
             '#required'    => TRUE,
@@ -56,7 +56,7 @@ class addWeekForm extends FormBase {
      * {@inheritdoc}
      */
     public function submitForm(array&$form, FormStateInterface $form_state) {
-        functions::addWeek($form_state->getValues());
+        functions::add($form_state->getValues());
     }
 
 }

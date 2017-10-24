@@ -10,7 +10,17 @@
         myApp.controller('myController', function ($scope, $http, $log) {
 
         });// end of ctr
+
+
+        $.post("/get_table",{} ,
+          function(data, status){
+            bookingCalendar(data);
+          }
+        );
+
+
       });//end of once
     }
   };
 })(jQuery, Drupal, drupalSettings);
+

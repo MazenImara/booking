@@ -83,6 +83,6 @@ class bookingController extends ControllerBase {
   public function getTable() {
     $request = json_decode(file_get_contents("php://input"));
     $table = functions::getTable($request->serviceId);
-    return new JsonResponse($table);
+    return new JsonResponse(functions::getData());
   }
 }
