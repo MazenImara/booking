@@ -41,9 +41,17 @@ booking.addserviceForm:
     _permission: 'manage booking'
 
 booking.addserverForm:
-  path: '/addserverform'
+  path: '/addserverform/{serviceId}'
   defaults:
     _title: 'Add Server'
     _form: '\Drupal\booking\Form\addServerForm'
+  requirements:
+    _permission: 'manage booking'
+
+booking.addWeekForm:
+  path: '/addweekform/{serviceId}'
+  defaults:
+    _title: 'Add Week'
+    _form: '\Drupal\booking\Form\addWeekForm'
   requirements:
     _permission: 'manage booking'

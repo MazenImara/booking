@@ -1,1 +1,8 @@
-{{content}}
+{{content.last}}
+{{content.service.title}}
+{{content.addServerForm}}
+{% for server in content.servers %}
+    {{server.name}} <br>
+{% endfor %}
+
+{{content.addWeekForm}}

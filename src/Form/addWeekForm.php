@@ -11,50 +11,24 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use \Drupal\booking\Functions\functions;
 
-class addServerForm extends FormBase {
+class addWeekForm extends FormBase {
     /**
      * {@inheritdoc}
      */
     public function getFormId() {
-        return 'addServerForm';
+        return 'addWeekForm';
     }
 
     /**
      * {@inheritdoc}
      */
     public function buildForm(array $form, FormStateInterface $form_state, $serviceId = NULL) {
-
-        $form['title'] = [
+        $form['quantity'] = [
             '#type'        => 'textfield',
-            '#placeholder' => t('Title'),
+            '#value' => 1,
+            '#placeholder' => t('Quantity'),
+            '#description' => t('Quantity'),
             '#required'    => TRUE,
-        ];
-        $form['name'] = [
-            '#type'        => 'textfield',
-            '#placeholder' => t('Name'),
-            '#required'    => TRUE,
-        ];
-        $form['email'] = [
-            '#type'        => 'email',
-            '#placeholder' => t('Email'),
-            '#required'    => TRUE,
-        ];
-        $form['phone'] = [
-            '#type'        => 'textfield',
-            '#placeholder' => t('Phone'),
-            '#required'    => TRUE,
-        ];
-        $form['password'] = [
-            '#type'        => 'textfield',
-            '#placeholder' => t('Password'),
-            '#required'    => TRUE,
-        ];
-        $form['status']['status'] = [
-            '#type'  => 'checkbox',
-            '#title' => $this->t('status'),
-            //'#default_value' => 1,
-            '#options'  => [0 => $this->t('False'), 1 => $this->t('True')],
-            '#required' => TRUE,
         ];
         $form['serviceId'] = [
             '#type'        => 'hidden',
@@ -82,7 +56,7 @@ class addServerForm extends FormBase {
      * {@inheritdoc}
      */
     public function submitForm(array&$form, FormStateInterface $form_state) {
-        functions::addServer($form_state->getValues());
+        functions::addWeek($form_state->getValues());
     }
 
 }

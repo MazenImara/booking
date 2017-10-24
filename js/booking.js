@@ -7,14 +7,10 @@
         var myApp = angular.module('myModule', []).config(function($interpolateProvider){
             $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
         });
-        myApp.controller('myController', function ($scope) {
-          $scope.content = content;
-        });
+        myApp.controller('myController', function ($scope, $http, $log) {
 
-
-
-//end
-      });
+        });// end of ctr
+      });//end of once
     }
   };
 })(jQuery, Drupal, drupalSettings);

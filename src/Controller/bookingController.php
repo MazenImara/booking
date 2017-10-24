@@ -4,6 +4,7 @@ namespace Drupal\booking\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use \Drupal\booking\Functions\functions;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class bookingController extends ControllerBase {
   /**
@@ -12,10 +13,7 @@ class bookingController extends ControllerBase {
    * @return array
    */
   public function booking() {
-    $content = [
-      'name' => 'mazen',
-      'age' => 29,
-    ];
+    //functions::deleteSlots();
     return [
       '#attached' => [
         'library' => [
@@ -28,7 +26,7 @@ class bookingController extends ControllerBase {
         ]
       ],
       '#theme'      => 'booking',
-      '#content'    => 'from booking contr',
+      '#content'    => 'functions::getWeeks(1)',
     ];
   }
   public function admin() {
@@ -68,7 +66,13 @@ class bookingController extends ControllerBase {
       ],
       '#theme'      => 'service',
       '#content'    => [
-        'addServerForm' => \Drupal::formBuilder()->getForm('Drupal\booking\Form\addServerForm'),
+        'addServerForm' => \Drupal::formBuilder()
+          ->getForm('Drupal\booking\Form\addServerForm',$id),
+        'addWeekForm' => \Drupal::formBuilder()
+          ->getForm('Drupal\booking\Form\addWeekForm',$id),
+        'service' => functions::getServices($id),
+        'servers' => functions::getServiceServers($id),
+        'last' => date("Y-m-d h:i:sa", strtotime("2017-W43-2")+(8 *60*60)) ,
       ],
     ];
   }
@@ -76,8 +80,9 @@ class bookingController extends ControllerBase {
  * getTable()
  * ajax response
  */
-  public function getTable($serviceId) {
-    $table = functions::getTable();
+  public function getTable() {
+    $request = json_decode(file_get_contents("php://input"));
+    $table = functions::getTable($request->serviceId);
     return new JsonResponse($table);
   }
 }

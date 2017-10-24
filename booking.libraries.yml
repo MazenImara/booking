@@ -1,7 +1,11 @@
 booking_lib:
   version: 1.x
+  css:
+    layout:
+      css/booking-style.css: {}
   js:
     js/booking.js: {}
+    js/calendarlib.js: {}
     js/angular.min.js: {}
   dependencies:
     - core/jquery
