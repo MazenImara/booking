@@ -11,12 +11,68 @@
 
         });// end of ctr
 
+        $('#reload').click(function(event) {
+          loadTable();
+        });
 
-        $.post("/get_table",{} ,
-          function(data, status){
-            bookingCalendar(data);
-          }
-        );
+        loadTable();
+        function loadTable() {
+          $('div').remove('.calendar');
+          $('div').remove('.events');
+          $.post("/get_table",{} ,
+            function(data, status){
+              bookingCalendar(data);
+            }
+          );
+        }
+
+
+
+
+        book = function (id){
+          span = $('#'+id);
+          $('#book-popup-windo').css('display', 'block');
+          span.css('color', 'red');
+          value = $.parseJSON(span.find('input').val());
+          console.log(value);
+
+          $('#book-form').submit(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            $('#book-popup-windo').css('display', 'none');
+            $.post("/booking/book",value ,
+              function(data, status){
+                loadTable();
+              }
+            );
+          });
+          $("#book-cancel").click(function(){
+            $('#book-popup-windo').css('display', 'none');
+          });
+        }
+        cancel = function (id){
+          span = $('#'+id);
+          $('#cancel-popup-windo').css('display', 'block');
+          span.css('color', 'red');
+          value = $.parseJSON(span.find('input').val());
+          console.log(value);
+
+          $('#cancel-form').submit(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            $('#cancel-popup-windo').css('display', 'none');
+            $.post("/booking/cancel",value ,
+              function(data, status){
+                loadTable();
+              }
+            );
+          });
+          $("#cancel-cancel").click(function(){
+            $('#cancel-popup-windo').css('display', 'none');
+          });
+        }
+
+
 
 
       });//end of once

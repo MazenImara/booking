@@ -27,7 +27,7 @@ class functions {
       ])
       ->execute();
   }
-  static public function add($settings) {
+  static public function addWorkDays($settings) {
     for ($i=0; $i < $settings['quantity']; $i++) {
       $lastDay = self::getLastDay();
       if ($lastDay != NULL) {
@@ -106,6 +106,33 @@ class functions {
     $query = \Drupal::database()->delete('booking_month', [])->execute();
     $query = \Drupal::database()->delete('booking_year', [])->execute();
   }
+
+  static public function addBook($book)
+  {
+    \Drupal::database()->insert('booking_book')
+      ->fields(['slotId', 'serviceId', 'clientId'])
+      ->values([$book['slotId'], $book['serviceId'], $book['clientId']])
+      ->execute();
+    self::changeSlotStatus($book['slotId'], 0);
+  }
+
+  static public function deleteBook($book)
+  {
+    \Drupal::database()->delete('booking_book', [])
+      ->condition('slotId', $book['slotId'])
+      ->execute();
+    self::changeSlotStatus($book['slotId'], 1);
+  }
+
+  static public function changeSlotStatus($id, $status) {
+    \Drupal::database()->update('booking_slot')
+      ->condition('id', $id)
+      ->fields(['status' => $status ])
+      ->execute();
+  }
+
+
+
 
   // get functions
   static function getLastId($table)
@@ -310,6 +337,24 @@ class functions {
 
     return $monthId;
   }
+  static public function isSlotBooked($book) {
+    $bookedSlot = NULL;
+    $result = \Drupal::database()->select('booking_book', 'q')
+      ->fields('q', ['id', 'slotId', 'serviceId', 'clientId'])
+      ->condition('slotId', $book['slotId'])
+      ->condition('serviceId', $book['serviceId'])
+      ->execute();
+    while ($row = $result->fetchAssoc()) {
+      $bookedSlot =  [
+        'id' => $row['id'],
+        'slotId' => $row['slotId'],
+        'serviceId' => $row['serviceId'],
+        'clientId' => $row['clientId'],
+      ];
+    }
+
+    return $bookedSlot;
+  }
   // ajax
   static public function getTable($serviceId) {
     $data = ['years' => []];
@@ -333,7 +378,18 @@ class functions {
           foreach ($day['slots'] as $slot) {
             $startTime = date("H:i",$slot['startTime']);
             $endTime = date("H:i",$slot['startTime'] + ($slot['period'] * 60));
-            $text = '<button id="5">Book</button> ' . $slot['server']['name'];
+            $bookText = '<button class="book-slot" id="'.$slot['id'].'" onclick="book('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
+             $slot['id'] .','.'"serviceId":'. $day['serviceId']
+             .'}\'> Book</button> ' . $slot['server']['name'];
+             $cancelText = '<button class="book-slot" id="'.$slot['id'].'" onclick="cancel('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
+             $slot['id'] .','.'"serviceId":'. $day['serviceId']
+             .'}\'>Cancel</button> ' . $slot['server']['name'];
+            if ($slot['status']) {
+              $text = $bookText;
+            }
+            else{
+              $text = $cancelText;
+            }
             array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
               'startTime' => $startTime,
               'endTime' => $endTime,
@@ -348,6 +404,32 @@ class functions {
       $y++;
     }
     return $data;
+  }
+
+  static public function book($book) {
+    if (self::isSlotBooked($book) == NULL) {
+      $a = ['book' => 'You have booked'];
+      self::addBook($book);
+
+    }
+    else{
+      $a = ['book' => 'you alrady booked'];
+    }
+
+    return $a;
+  }
+
+  static public function cancel($book) {
+    if (self::isSlotBooked($book) != NULL) {
+      $a = ['book' => 'You have canceled'];
+      self::deleteBook($book);
+
+    }
+    else{
+      $a = ['book' => 'you alrady cancel'];
+    }
+
+    return $a;
   }
 
 

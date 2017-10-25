@@ -4,19 +4,19 @@ namespace Drupal\booking\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addServerForm.
+ * Contains \Drupal\booking\Form\addWorkDaysForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use \Drupal\booking\Functions\functions;
 
-class addWeekForm extends FormBase {
+class addWorkDaysForm extends FormBase {
     /**
      * {@inheritdoc}
      */
     public function getFormId() {
-        return 'addWeekForm';
+        return 'addWorkDaysForm';
     }
 
     /**
@@ -56,7 +56,7 @@ class addWeekForm extends FormBase {
      * {@inheritdoc}
      */
     public function submitForm(array&$form, FormStateInterface $form_state) {
-        functions::add($form_state->getValues());
+        functions::addWorkDays($form_state->getValues());
     }
 
 }

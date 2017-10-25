@@ -6,10 +6,37 @@
   </div>
 </dir>
 
+<button id="reload" >reload</button>
+
 <div class="booking-calendar">
   <div id="calendarContainer"></div>
   <div id="organizerContainer" style="margin-left: 8px;"></div>
 </div>
 
-<script>
-</script>
+
+<!-- The Modal -->
+<div id="book-popup-windo" class="modal" >
+  <!-- Modal content -->
+  <div class="modal-content">
+    <p>Some text in the Modal..</p>
+    <form id="book-form">
+      <input type="text" name="" required>
+      <input id="book-cancel" name="book-cancel" type="submit" class="" value="{{'Cancel'| trans}}">
+      <input id="book-confirm" type="submit" class="confirm" value="{{'Confirm'| trans}}">
+    </form>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div id="cancel-popup-windo" class="modal" >
+  <!-- Modal content -->
+  <div class="modal-content">
+    <p>Some text in the Modal..</p>
+    <form id="cancel-form">
+      <input id="cancel-cancel" name="cancel-cancel" type="submit" class="" value="{{'Cancel'| trans}}">
+      <input id="cancel-confirm" name="" type="submit" class="confirm" value="{{'Confirm'| trans}}">
+    </form>
+  </div>
+</div>
+
+
