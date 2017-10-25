@@ -97,15 +97,24 @@ function booking_schema() {
           'type' => 'int',
           'not null' => TRUE,
         ],
-        'weekId' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
         'status' => [
           'type' => 'int',
           'size' => 'tiny',
           'not null' => TRUE,
           'default' => 1,
+        ],
+        'monthId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'serviceId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'timeStamp' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
         ],
       ],
       'primary key' => ['id'],
@@ -260,8 +269,8 @@ function booking_schema() {
         ],
         'startTime' => [
           'type' => 'varchar',
-          'mysql_type' => 'timestamp',
-          'not null' => FALSE,
+          'length' => 255,
+          'not null' => TRUE,
         ],
       ],
       'primary key' => ['id'],
@@ -289,15 +298,15 @@ function booking_schema() {
     ];
   }
 
-  if (!db_table_exists('booking_week')) {
-    $schema['booking_week'] = [
+  if (!db_table_exists('booking_year')) {
+    $schema['booking_year'] = [
       'fields' => [
         'id' => [
           'type' => 'serial',
           'unsigned' => TRUE,
           'not null' => TRUE,
         ],
-        'week' => [
+        'year' => [
           'type' => 'int',
           'not null' => TRUE,
         ],
@@ -305,7 +314,24 @@ function booking_schema() {
           'type' => 'int',
           'not null' => TRUE,
         ],
-        'year' => [
+      ],
+      'primary key' => ['id'],
+    ];
+  }
+
+  if (!db_table_exists('booking_month')) {
+    $schema['booking_month'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'month' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'yearId' => [
           'type' => 'int',
           'not null' => TRUE,
         ],

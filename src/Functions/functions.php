@@ -210,14 +210,14 @@ class functions {
       ->fields('q', ['id', 'month','yearId'])
       ->condition('yearId', [$yearId])
       ->execute();
-      while ($row = $result->fetchAssoc()) {
-        array_push($months, [
-            'id' => $row['id'],
-            'month' => $row['month'],
-            'yearId' => $row['yearId'],
-            'days' => self::getDays($row['id']),
-          ]);
-      }
+    while ($row = $result->fetchAssoc()) {
+      array_push($months, [
+        'id' => $row['id'],
+        'month' => $row['month'],
+        'yearId' => $row['yearId'],
+        'days' => self::getDays($row['id']),
+      ]);
+    }
 
     return $months;
   }
@@ -227,17 +227,17 @@ class functions {
       ->fields('q', ['id', 'day', 'monthId', 'status', 'serviceId', 'timeStamp'])
       ->condition('monthId', [$monthId])
       ->execute();
-      while ($row = $result->fetchAssoc()) {
-        array_push($days, [
-            'id' => $row['id'],
-            'day' => $row['day'],
-            'monthId' => $row['monthId'],
-            'serviceId' => $row['serviceId'],
-            'status' => $row['status'],
-            'timeStamp' => $row['timeStamp'],
-            'slots' => self::getSlots($row['id']),
-          ]);
-      }
+    while ($row = $result->fetchAssoc()) {
+      array_push($days, [
+        'id' => $row['id'],
+        'day' => $row['day'],
+        'monthId' => $row['monthId'],
+        'serviceId' => $row['serviceId'],
+        'status' => $row['status'],
+        'timeStamp' => $row['timeStamp'],
+        'slots' => self::getSlots($row['id']),
+      ]);
+    }
 
     return $days;
   }
@@ -255,12 +255,33 @@ class functions {
             'dayId' => $row['dayId'],
             'status' => $row['status'],
             'startTime' => $row['startTime'],
-            'serverId' => $row['serverId'],
+            'server' => self::getServer($row['serverId']),
           ]);
       }
 
     return $slots;
   }
+  static public function getServer($id) {
+    $server = NULL;
+    $result = \Drupal::database()->select('booking_server', 'q')
+      ->fields('q', ['id', 'title', 'name', 'email', 'phone', 'password', 'status'])
+      ->condition('id', [$id])
+      ->execute();
+      while ($row = $result->fetchAssoc()) {
+        $server = [
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'name' => $row['name'],
+          'email' => $row['email'],
+          'phone' => $row['phone'],
+          'password' => $row['password'],
+          'status' => $row['status'],
+        ];
+      }
+
+    return $server;
+  }
+  // is function
   static public function isYear($year, $serviceId)
   {
     $yearId = NULL;
@@ -269,9 +290,9 @@ class functions {
       ->condition('year', [$year])
       ->condition('serviceId', [$serviceId])
       ->execute();
-      while ($row = $result->fetchAssoc()) {
-        $yearId =  $row['id'];
-      }
+    while ($row = $result->fetchAssoc()) {
+      $yearId =  $row['id'];
+    }
 
     return $yearId;
   }
@@ -283,9 +304,9 @@ class functions {
       ->condition('yearId', [$yearId])
       ->condition('month', [$month])
       ->execute();
-      while ($row = $result->fetchAssoc()) {
-        $monthId =  $row['id'];
-      }
+    while ($row = $result->fetchAssoc()) {
+      $monthId =  $row['id'];
+    }
 
     return $monthId;
   }
@@ -312,11 +333,12 @@ class functions {
           foreach ($day['slots'] as $slot) {
             $startTime = date("H:i",$slot['startTime']);
             $endTime = date("H:i",$slot['startTime'] + ($slot['period'] * 60));
+            $text = '<button id="5">Book</button> ' . $slot['server']['name'];
             array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
               'startTime' => $startTime,
               'endTime' => $endTime,
               'mTime' => '>',
-              'text' => '<button id="5">Book</button>This is scheduled to show today, anyday.',
+              'text' =>  $text,
             ]);
           }
           $d++;
