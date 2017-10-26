@@ -18,12 +18,33 @@
 <div id="book-popup-windo" class="modal" >
   <!-- Modal content -->
   <div class="modal-content">
-    <p>Some text in the Modal..</p>
-    <form id="book-form">
-      <input type="text" name="" required>
-      <input id="book-cancel" name="book-cancel" type="submit" class="" value="{{'Cancel'| trans}}">
-      <input id="book-confirm" type="submit" class="confirm" value="{{'Confirm'| trans}}">
-    </form>
+    <span id="booking-logOut">{{'Log out'| trans}}</span>
+    <p class="booking-popup-text">{{'You have to log in or sin up'| trans}}</p>
+    <p class="booking-signUp-warning warning">*{{'This email is exist, if you forgot your password click '| trans}}<a href="">{{'Resend password to this email'| trans}}</a></p>
+    <p class="booking-logIn-warning warning">*{{'This email is not exist, please sign up '| trans}}</p>
+    <div class="booking-login booking-logedIn">
+      <form id="booking-logIn">
+        <input type="text" id="booking-logIn-email" name="email" class="booking-email" placeholder="{{'Email'| trans}}" size="30" required>
+        <input type="text" name="password" placeholder="{{'Password'| trans}}" size="30" required>
+        <input id="booking-logIn-submit" type="submit" class="" value="{{'Log in'| trans}}">
+      </form>
+    </div>
+    <div class="booking-signUp booking-logedIn">
+      <form id="booking-signUp">
+        <input type="text" name="name" placeholder="{{'Name'| trans}}" size="30" required>
+        <input type="text" name="phone" placeholder="{{'Phone'| trans}}" size="30" required>
+        <input type="text" id="booking-signUp-email" class="booking-email" name="email" placeholder="{{'Email'| trans}}" size="30" required>
+        <input type="text" name="password" placeholder="{{'Password'| trans}}" size="30" required>
+        <input id="booking-signUp-submit" type="submit" class="" value="{{'Sign up'| trans}}">
+      </form>
+    </div>
+    <div class="book-form">
+      <form id="book-form">
+        <input id="book-confirm" type="submit" class="confirm" value="{{'Confirm'| trans}}">
+      </form>
+      <button id="book-cancel" name="book-cancel" class="" >{{'Cancel'| trans}}</button>
+    </div>
+
   </div>
 </div>
 
@@ -33,9 +54,9 @@
   <div class="modal-content">
     <p>Some text in the Modal..</p>
     <form id="cancel-form">
-      <input id="cancel-cancel" name="cancel-cancel" type="submit" class="" value="{{'Cancel'| trans}}">
       <input id="cancel-confirm" name="" type="submit" class="confirm" value="{{'Confirm'| trans}}">
     </form>
+    <button id="cancel-cancel" name="book-cancel" class="" >{{'Cancel'| trans}}</button>
   </div>
 </div>
 

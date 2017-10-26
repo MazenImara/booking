@@ -1,9 +1,9 @@
 # ajax
-booking.getTable:
-  path: '/get_table'
+booking.getData:
+  path: '/get_data'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::getTable'
+    _controller: '\Drupal\booking\Controller\bookingController::getData'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -25,6 +25,35 @@ booking.cancel:
   methods:  [POST]
   requirements:
     _permission: 'access content'
+
+booking.isEmailExist:
+  path: '/booking/isemailexist'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingController::isEmailExist'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.signUp:
+  path: '/booking/signup'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingController::signUp'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.logIn:
+  path: '/booking/login'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingController::LogIn'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+
 # Pages
 booking.booking:
   path: '/booking'

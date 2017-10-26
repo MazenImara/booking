@@ -10,5 +10,6 @@ booking_lib:
   dependencies:
     - core/jquery
     - core/jquery.once
+    - core/jquery.cookie
     - core/drupal.ajax
     - core/drupalSettings

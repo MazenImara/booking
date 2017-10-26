@@ -80,7 +80,7 @@ class bookingController extends ControllerBase {
  * getTable()
  * ajax response
  */
-  public function getTable() {
+  public function getData() {
     return new JsonResponse(functions::getData());
   }
 /**
@@ -107,5 +107,41 @@ class bookingController extends ControllerBase {
     ];
     return new JsonResponse(functions::cancel($book));
   }
+/**
+ * isExist()
+ * ajax response
+ */
+  public function isEmailExist() {
+    return new JsonResponse(functions::isEmailExist($_POST['isEmailExist']['email'],$_POST['isEmailExist']['table']));
+  }
+
+/**
+ * signUp()
+ * ajax response
+ */
+  public function signUp() {
+    $client = [
+      'name' => $_POST['name'],
+      'phone' => $_POST['phone'],
+      'email' => $_POST['email'],
+      'password' => $_POST['password'],
+    ];
+
+    return new JsonResponse(functions::clientSignUp($client));
+  }
+
+/**
+ * logIn()
+ * ajax response
+ */
+  public function logIn() {
+    $log = [
+      'email' => $_POST['email'],
+      'password' => $_POST['password'],
+    ];
+
+    return new JsonResponse(functions::clientLogIn($log));
+  }
+
 
 }// end of class

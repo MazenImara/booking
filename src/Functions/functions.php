@@ -27,6 +27,19 @@ class functions {
       ])
       ->execute();
   }
+  static public function addClient($client)
+  {
+    \Drupal::database()->insert('booking_client')
+      ->fields(['name', 'email', 'phone', 'password'])
+      ->values([
+        $client['name'],
+        $client['email'],
+        $client['phone'],
+        $client['password'],
+      ])
+      ->execute();
+    return self::getLastId('booking_client');
+  }
   static public function addWorkDays($settings) {
     for ($i=0; $i < $settings['quantity']; $i++) {
       $lastDay = self::getLastDay();
@@ -355,6 +368,21 @@ class functions {
 
     return $bookedSlot;
   }
+  static public function isEmailExist($email, $table) {
+    $id = NULL;
+    $result = \Drupal::database()->select($table, 'q')
+      ->fields('q', ['id'])
+      ->condition('email', $email)
+      ->execute();
+    while ($row = $result->fetchAssoc()) {
+      $id =  [
+        'id' => $row['id'],
+        'email' => $email,
+      ];
+    }
+    return $id;
+  }
+
   // ajax
   static public function getTable($serviceId) {
     $data = ['years' => []];
@@ -430,6 +458,36 @@ class functions {
     }
 
     return $a;
+  }
+
+  static public function clientSignUp($client) {
+    if (self::isEmailExist($client['email'], 'booking_client') == NULL) {
+      $id = self::addClient($client);
+      $client['id'] = $id;
+    }
+    else{
+      $client = NULL;
+    }
+    return $client;
+  }
+
+  static public function clientLogIn($log) {
+    $client = NULL;
+    $result = \Drupal::database()->select('booking_client', 'q')
+      ->fields('q', ['id', 'name', 'email', 'phone', 'password'])
+      ->condition('email', $log['email'])
+      ->condition('password', $log['password'])
+      ->execute();
+      while ($row = $result->fetchAssoc()) {
+        $client = [
+          'id' => $row['id'],
+          'name' => $row['name'],
+          'email' => $row['email'],
+          'phone' => $row['phone'],
+          'password' => $row['password'],
+        ];
+      }
+    return $client;
   }
 
 

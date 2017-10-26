@@ -24,7 +24,7 @@
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 50%;
+    width: 45%;
 }
 
 
@@ -39,4 +39,33 @@
 }
 .booking-calendar{
     height: 800px;
+}
+.booking-login{
+
+}
+.booking-signUp{
+    float: right;
+
+
+}
+.booking-signUp,.booking-login{
+    display: inline-block;
+}
+.book-form{
+    margin-top: 100px;
+}
+
+.warning{
+    color:red;
+    display: none;
+}
+
+
+#booking-logOut{
+    float: right;
+    text-decoration: underline;
+}
+#booking-logOut:hover {
+    color:red;
+    text-decoration: none;
 }
