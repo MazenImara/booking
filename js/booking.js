@@ -19,7 +19,8 @@
         function loadData() {
           $('div').remove('.calendar');
           $('div').remove('.events');
-          $.post("/get_data",{} ,
+          value = {cookieClient: getBookingCookie()};
+          $.post("/get_data",value ,
             function(data, status){
               bookingCalendar(data);
             }
@@ -27,20 +28,22 @@
         }
 
         book = function (id){
+          Id = id;
           $('#book-popup-windo').css('display', 'block');
           $('#book-form').submit(function(event){
             event.preventDefault();
             event.stopImmediatePropagation();
-            span = $('#'+id);
-            span.css('color', 'red');
-            value = $.parseJSON(span.find('input').val());
-            console.log(value);
-            $('#book-popup-windo').css('display', 'none');
-            $.post("/booking/book",value ,
-              function(data, status){
-                loadData();
-              }
-            );
+            span = $('#'+Id);
+            if (span.attr('id') == Id) {
+              value = $.parseJSON(span.find('input').val());
+              console.log(value);
+              $('#book-popup-windo').css('display', 'none');
+              $.post("/booking/book",value ,
+                function(data, status){
+                  loadData();
+                }
+              );
+            }
           });
           $("#book-cancel").click(function(){
             $('#book-popup-windo').css('display', 'none');

@@ -81,7 +81,7 @@ class bookingController extends ControllerBase {
  * ajax response
  */
   public function getData() {
-    return new JsonResponse(functions::getData());
+    return new JsonResponse(functions::getData($_POST['cookieClient']));
   }
 /**
  * book()

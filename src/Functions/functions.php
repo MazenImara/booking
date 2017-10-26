@@ -391,7 +391,7 @@ class functions {
     return $data;
   }
 
-  static public function getData() {
+  static public function getData($client) {
     $service = self::getServices(1);
     $data =['years' => []];
     $y = 0;
@@ -418,12 +418,14 @@ class functions {
             else{
               $text = $cancelText;
             }
-            array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
-              'startTime' => $startTime,
-              'endTime' => $endTime,
-              'mTime' => '>',
-              'text' =>  $text,
-            ]);
+            if ($slot['status']) {
+              array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
+                'startTime' => $startTime,
+                'endTime' => $endTime,
+                'mTime' => '>',
+                'text' =>  $text,
+              ]);
+            }
           }
           $d++;
         }
