@@ -17,33 +17,19 @@ class bookingController extends ControllerBase {
     return [
       '#attached' => [
         'library' => [
-          'booking/booking_lib',
+          'booking/booking_booking',
         ],
-        'drupalSettings' => [
-          'booking' => [
-            'content' => functions::test(),
-          ]
-        ]
       ],
       '#theme'      => 'booking',
       '#content'    => 'functions::getWeeks(1)',
     ];
   }
   public function admin() {
-    $content = [
-      'name' => 'mazen',
-      'age' => 29,
-    ];
     return [
       '#attached' => [
         'library' => [
           'booking/booking_lib',
         ],
-        'drupalSettings' => [
-          'booking' => [
-            'content' => functions::test(),
-          ]
-        ]
       ],
       '#theme'      => 'admin',
       '#content'    => [
@@ -52,17 +38,13 @@ class bookingController extends ControllerBase {
       ],
     ];
   }
+
   public function service($id) {
     return [
       '#attached' => [
         'library' => [
           'booking/booking_lib',
         ],
-        'drupalSettings' => [
-          'booking' => [
-            'content' => functions::test(),
-          ]
-        ]
       ],
       '#theme'      => 'service',
       '#content'    => [
@@ -73,6 +55,25 @@ class bookingController extends ControllerBase {
         'service' => functions::getServices($id),
         'servers' => functions::getServiceServers($id),
         'last' => date("Y-m-d h:i:sa", strtotime("2017-W43-2")+(8 *60*60)) ,
+      ],
+    ];
+  }
+
+  public function server($id) {
+    return [
+      '#attached' => [
+        'library' => [
+          'booking/booking_server',
+        ],
+        'drupalSettings' => [
+          'booking' => [
+            'content' => functions::test(),
+          ]
+        ]
+      ],
+      '#theme'      => 'server',
+      '#content'    => [
+        'server' => functions::getserver($id),
       ],
     ];
   }
@@ -91,7 +92,7 @@ class bookingController extends ControllerBase {
     $book = [
       'slotId' => $_POST['slotId'],
       'serviceId' => $_POST['serviceId'],
-      'clientId' => 1,
+      'client' => $_POST['client'],
     ];
     return new JsonResponse(functions::book($book));
   }

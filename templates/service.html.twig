@@ -2,7 +2,7 @@
 {{content.service.title}}
 {{content.addServerForm}}
 {% for server in content.servers %}
-    {{server.name}} <br>
+  <a href="/booking/server/{{server.id}}">{{server.name}}</a>  <br>
 {% endfor %}
 
 {{content.addWorkDaysForm}}

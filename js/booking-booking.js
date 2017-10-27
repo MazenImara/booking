@@ -3,14 +3,6 @@
     attach: function (context, settings) {
       $('body', context).once('booking').each(function () {
 //start
-        var content = drupalSettings.booking.content;
-        var myApp = angular.module('myModule', []).config(function($interpolateProvider){
-            $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
-        });
-        myApp.controller('myController', function ($scope, $http, $log) {
-
-        });// end of ctr
-
         $('#reload').click(function(event) {
           loadData();
         });
@@ -28,6 +20,7 @@
         }
 
         book = function (id){
+          $('.book-form').show();
           Id = id;
           $('#book-popup-windo').css('display', 'block');
           $('#book-form').submit(function(event){
@@ -36,6 +29,7 @@
             span = $('#'+Id);
             if (span.attr('id') == Id) {
               value = $.parseJSON(span.find('input').val());
+              value.client = getBookingCookie();
               console.log(value);
               $('#book-popup-windo').css('display', 'none');
               $.post("/booking/book",value ,
@@ -45,25 +39,29 @@
               );
             }
           });
-          $("#book-cancel").click(function(){
+          $(".book-cancel").click(function(){
             $('#book-popup-windo').css('display', 'none');
           });
         }
+
         cancel = function (id){
+          Id = id;
           $('#cancel-popup-windo').css('display', 'block');
           $('#cancel-form').submit(function(event){
             event.preventDefault();
             event.stopImmediatePropagation();
-            span = $('#'+id);
-            span.css('color', 'red');
-            value = $.parseJSON(span.find('input').val());
-            console.log(value);
-            $('#cancel-popup-windo').css('display', 'none');
-            $.post("/booking/cancel",value ,
-              function(data, status){
-                loadData();
-              }
-            );
+            span = $('#'+Id);
+            if (span.attr('id') == Id) {
+              span.css('color', 'red');
+              value = $.parseJSON(span.find('input').val());
+              console.log(value);
+              $('#cancel-popup-windo').css('display', 'none');
+              $.post("/booking/cancel",value ,
+                function(data, status){
+                  loadData();
+                }
+              );
+            }
           });
           $("#cancel-cancel").click(function(){
             $('#cancel-popup-windo').css('display', 'none');
@@ -136,19 +134,22 @@
         function isLogIn() {
           if (getBookingCookie()) {
             $('.booking-logedIn').hide();
+            $('.booking-logedOut').show();
             $('#book-confirm').removeAttr('disabled');
             $('#booking-logOut').show();
           }
           else{
             $('.booking-logedIn').show();
+            $('.booking-logedOut').hide();
             $('#book-confirm').attr('disabled','disabled');
             $('#booking-logOut').hide();
           }
         }
 
-        $('#booking-logOut').click(function(event) {
+        $('.booking-logOut').click(function(event) {
           $.removeCookie("booking_kookie");
           isLogIn();
+          loadData();
         });
 
         $('#booking-logIn').submit(function(event) {
@@ -160,7 +161,7 @@
                 setBookingCookie(data);
                 isLogIn();
                 $('.booking-popup-text').text('Hello '+ data.name);
-                alert('Hello '+ data.name)
+                loadData();
               }
               else{
                 $('p').append('<p style="color:red">* Wrong password <a href="">Resend password to this email</a></p>');
@@ -168,6 +169,18 @@
             }
           );
         });
+
+        $('#logIn').click(function(event) {
+          $('#book-popup-windo').css('display', 'block');
+          $('.book-form').hide();
+          $('.booking-windo-close').show();
+        });
+        $(".booking-close").click(function(){
+          $('#book-popup-windo').css('display', 'none');
+          $('.booking-windo-close').hide();
+        });
+
+
 
       });//end of once
     }

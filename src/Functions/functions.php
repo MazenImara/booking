@@ -124,7 +124,7 @@ class functions {
   {
     \Drupal::database()->insert('booking_book')
       ->fields(['slotId', 'serviceId', 'clientId'])
-      ->values([$book['slotId'], $book['serviceId'], $book['clientId']])
+      ->values([$book['slotId'], $book['serviceId'], $book['client']['id']])
       ->execute();
     self::changeSlotStatus($book['slotId'], 0);
   }
@@ -368,6 +368,7 @@ class functions {
 
     return $bookedSlot;
   }
+
   static public function isEmailExist($email, $table) {
     $id = NULL;
     $result = \Drupal::database()->select($table, 'q')
@@ -381,6 +382,23 @@ class functions {
       ];
     }
     return $id;
+  }
+
+  static public function getBookBySlotId($slotId) {
+    $book = NULL;
+    $result = \Drupal::database()->select('booking_book', 'q')
+      ->fields('q', ['id', 'serviceId', 'clientId'])
+      ->condition('slotId', $slotId)
+      ->execute();
+    while ($row = $result->fetchAssoc()) {
+      $book =  [
+        'id' => $row['id'],
+        'slotId' => $slotId,
+        'serviceId' => $row['serviceId'],
+        'clientId' => $row['clientId'],
+      ];
+    }
+    return $book;
   }
 
   // ajax
@@ -413,18 +431,22 @@ class functions {
              $slot['id'] .','.'"serviceId":'. $day['serviceId']
              .'}\'>Cancel</button> ' . $slot['server']['name'];
             if ($slot['status']) {
-              $text = $bookText;
-            }
-            else{
-              $text = $cancelText;
-            }
-            if ($slot['status']) {
               array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
                 'startTime' => $startTime,
                 'endTime' => $endTime,
                 'mTime' => '>',
-                'text' =>  $text,
+                'text' =>  $bookText,
               ]);
+            }
+            else{
+              if ($client['id'] == self::getBookBySlotId($slot['id'])['clientId']) {
+                array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
+                  'startTime' => $startTime,
+                  'endTime' => $endTime,
+                  'mTime' => '>',
+                  'text' =>  $cancelText,
+                ]);
+              }
             }
           }
           $d++;
@@ -437,7 +459,7 @@ class functions {
   }
 
   static public function book($book) {
-    if (self::isSlotBooked($book) == NULL) {
+    if (self::isSlotBooked($book) == NULL && self::isEmailExist($book['client']['email'], 'booking_client') != NULL) {
       $a = ['book' => 'You have booked'];
       self::addBook($book);
 

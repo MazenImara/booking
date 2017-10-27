@@ -1,11 +1,22 @@
-booking_lib:
-  version: 1.x
+booking_booking:
   css:
     layout:
-      css/booking-style.css: {}
+      css/booking-booking.css: {}
   js:
-    js/booking.js: {}
+    js/booking-booking.js: {}
     js/calendarlib.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/jquery.cookie
+    - core/drupal.ajax
+
+booking_server:
+  css:
+    layout:
+      css/booking-server.css: {}
+  js:
+    js/booking-server.js: {}
     js/angular.min.js: {}
   dependencies:
     - core/jquery
