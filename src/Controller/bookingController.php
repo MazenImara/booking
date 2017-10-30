@@ -67,13 +67,14 @@ class bookingController extends ControllerBase {
         ],
         'drupalSettings' => [
           'booking' => [
-            'content' => functions::test(),
+            'content' => functions::getDataServer($id),
           ]
         ]
       ],
       '#theme'      => 'server',
       '#content'    => [
         'server' => functions::getserver($id),
+        'data' => functions::getDataServer($id),
       ],
     ];
   }
@@ -81,8 +82,8 @@ class bookingController extends ControllerBase {
  * getTable()
  * ajax response
  */
-  public function getData() {
-    return new JsonResponse(functions::getData($_POST['cookieClient']));
+  public function getDataClient() {
+    return new JsonResponse(functions::getDataClient($_POST['cookieClient']));
   }
 /**
  * book()

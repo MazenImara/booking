@@ -95,8 +95,7 @@ class functions {
       $workTime = ['start' => 8, 'end' => 17]; $serverCount = 1;
       $period = 60; $timeOff = [ 'start' => 12, 'end' => 1];
       $slotQuantity = ($workTime['end'] - $workTime['start']);
-      $dayDate = '2017-' . 'W' . (date('W',REQUEST_TIME) + 1) . '-' . $day['day'];
-      $startTime = strtotime($dayDate)+(8*60*60);
+      $startTime = strtotime(date("Y/m/d",$newDayTime)) + (8*60*60);
       foreach (self::getServiceServers($serviceId) as $server) {
         for ($i=0; $i < $slotQuantity; $i++) {
           $slot = ['dayId' => $dayId, 'period' => $period, 'status' => 1, 'startTime' => $startTime, 'serverId' => $server['id']];
@@ -112,12 +111,13 @@ class functions {
       ->values([$slot['period'], $slot['dayId'], $slot['status'], $slot['startTime'], $slot['serverId']])
       ->execute();
   }
-  static public function deleteSlots($value='')
+  static public function deleteSlots()
   {
     $query = \Drupal::database()->delete('booking_slot', [])->execute();
     $query = \Drupal::database()->delete('booking_day', [])->execute();
     $query = \Drupal::database()->delete('booking_month', [])->execute();
     $query = \Drupal::database()->delete('booking_year', [])->execute();
+    drupal_set_message('all data deleted');
   }
 
   static public function addBook($book)
@@ -281,6 +281,7 @@ class functions {
 
     return $days;
   }
+
   static public function getSlots($dayId)
   {
     $slots = [];
@@ -296,6 +297,33 @@ class functions {
             'status' => $row['status'],
             'startTime' => $row['startTime'],
             'server' => self::getServer($row['serverId']),
+          ]);
+      }
+
+    return $slots;
+  }
+
+  static public function getSlotsByServer($serverId)
+  {
+    $slots = [];
+    $result = \Drupal::database()->select('booking_slot', 'q')
+      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime'])
+      ->condition('serverId', $serverId)
+      ->execute();
+      while ($row = $result->fetchAssoc()) {
+        array_push($slots, [
+            'id' => $row['id'],
+            'period' => $row['period'],
+            'dayId' => $row['dayId'],
+            'status' => $row['status'],
+            'book' =>self::getBookBySlotId($row['id']),
+            'startTimeStamp' => $row['startTime'],
+            'startTime' => date("H:i",$row['startTime']),
+            'endTime' => date("H:i",$row['startTime'] + ($row['period'] * 60)),
+            'year' => date('Y', $row['startTime']),
+            'month' => date('m', $row['startTime']),
+            'day' => date('d', $row['startTime']),
+            'serverId' => $row['serverId'],
           ]);
       }
 
@@ -395,11 +423,31 @@ class functions {
         'id' => $row['id'],
         'slotId' => $slotId,
         'serviceId' => $row['serviceId'],
-        'clientId' => $row['clientId'],
+        'client' => self::getClient($row['clientId']),
       ];
     }
     return $book;
   }
+
+  static public function getClient($id) {
+    $client = NULL;
+    $result = \Drupal::database()->select('booking_client', 'q')
+      ->fields('q', ['id', 'name', 'email', 'phone', 'password'])
+      ->condition('id', $id)
+      ->execute();
+    while ($row = $result->fetchAssoc()) {
+      $client =  [
+        'id' => $row['id'],
+        'name' => $row['name'],
+        'email' => $row['email'],
+        'phone' => $row['phone'],
+        'password' => $row['password'],
+      ];
+    }
+    return $client;
+  }
+
+
 
   // ajax
   static public function getTable($serviceId) {
@@ -409,7 +457,7 @@ class functions {
     return $data;
   }
 
-  static public function getData($client) {
+  static public function getDataClient($client) {
     $service = self::getServices(1);
     $data =['years' => []];
     $y = 0;
@@ -512,6 +560,12 @@ class functions {
         ];
       }
     return $client;
+  }
+
+  static public function getDataServer($id) {
+    $data = NULL;
+    $data = self::getSlotsByServer($id);
+    return $data;
   }
 
 

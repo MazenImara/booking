@@ -12,7 +12,7 @@
           $('div').remove('.calendar');
           $('div').remove('.events');
           value = {cookieClient: getBookingCookie()};
-          $.post("/get_data",value ,
+          $.post("/getdataclient",value ,
             function(data, status){
               bookingCalendar(data);
             }

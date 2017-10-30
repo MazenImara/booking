@@ -1,9 +1,9 @@
 # ajax
 booking.getData:
-  path: '/get_data'
+  path: '/getdataclient'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::getData'
+    _controller: '\Drupal\booking\Controller\bookingController::getDataClient'
   methods:  [POST]
   requirements:
     _permission: 'access content'

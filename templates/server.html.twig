@@ -1,14 +1,32 @@
-{{content.server.name}}
+{{content.server.name}}<br>
+{{content.data[0].year}}
 
 <dir ng-app='bookingServer'>
   <div ng-controller="bookingServerCtrl">
-{[{content.years[0].int}]}
 
-    <label>Search: <input ng-model="searchText"></label>
+    {{'Date'|trans}}:
+    <input size="4" ng-init="date.year=thisYear" placeholder="yyyy" ng-model="date.year">
+    <input size="2" ng-init="date.month=thisMonth" placeholder="mm" ng-model="date.month">
+    <input size="2" ng-init="date.day=today" placeholder="dd"  ng-model="date.day">
+    <input type="radio" value="0" ng-model="date.status"> {{'Booked'|trans}}
+    <input type="radio" value="1" ng-model="date.status"> {{'Unbooked'|trans}}
+    <button ng-click="clear()">{{'Clear'|trans}}</button><br>
+    <button ng-click="previous()">{{'Previous'|trans}}</button>
+    <button ng-click="todayFun()">{{'Today'|trans}}</button>
+    <button ng-click="next()">{{'Next'|trans}}</button>
+
     <table id="searchTextResults">
-      <tr><th>Name</th><th>Phone</th></tr>
-      <tr ng-repeat="item in content.years[0].months[0].days | filter:searchText">
-        <td>{[{item.int}]}</td>
+      <tr>
+        <th>{{'Date'|trans}}</th>
+        <th>{{'Period'|trans}}</th>
+        <th>{{'Status'|trans}}</th>
+        <th>{{'Name'|trans}}</th>
+      </tr>
+      <tr ng-repeat="item in content | filter:date">
+        <td>{[{item.year}]}/{[{item.month}]}/{[{item.day}]}</td>
+        <td>{[{item.startTime}]} - {[{item.endTime}]}</td>
+        <td>{[{item.status}]}</td>
+        <td>{[{item.book.client.name}]}</td>
       </tr>
     </table>
     <hr>
@@ -18,20 +36,4 @@
   </div>
 </dir>
 
-
-
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script type="text/javascript">
-  $( function() {
-    $( "#datepicker" ).datepicker({
-      showWeek: true,
-      firstDay: 1
-    });
-  } );
-  </script>
-
-
-<p>Date: <input type="text" id="datepicker"></p>
 
