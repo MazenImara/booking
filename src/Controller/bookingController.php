@@ -141,7 +141,6 @@ class bookingController extends ControllerBase {
       'email' => $_POST['email'],
       'password' => $_POST['password'],
     ];
-
     return new JsonResponse(functions::clientLogIn($log));
   }
 
