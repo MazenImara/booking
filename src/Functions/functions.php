@@ -487,7 +487,7 @@ class functions {
               ]);
             }
             else{
-              if ($client['id'] == self::getBookBySlotId($slot['id'])['clientId']) {
+              if ($client['id'] == self::getBookBySlotId($slot['id'])['client']['id'] ) {
                 array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
                   'startTime' => $startTime,
                   'endTime' => $endTime,
@@ -520,13 +520,13 @@ class functions {
   }
 
   static public function cancel($book) {
-    if (self::isSlotBooked($book) != NULL) {
+    if (self::isSlotBooked($book) != NULL && $book['client']['id'] == self::getBookBySlotId($book['slotId'])['client']['id']) {
       $a = ['book' => 'You have canceled'];
       self::deleteBook($book);
 
     }
     else{
-      $a = ['book' => 'you alrady cancel'];
+      $a = ['book' => 'You can not cancel'];
     }
 
     return $a;

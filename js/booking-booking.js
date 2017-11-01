@@ -3,6 +3,15 @@
     attach: function (context, settings) {
       $('body', context).once('booking').each(function () {
 //start
+
+        $('#test').click(function(event) {
+          $.post("/bookingApp/test",value ,
+            function(data, status){
+              console.log(data);
+            }
+          );
+        });
+
         $('#reload').click(function(event) {
           loadData();
         });
@@ -54,6 +63,7 @@
             if (span.attr('id') == Id) {
               span.css('color', 'red');
               value = $.parseJSON(span.find('input').val());
+              value.client = getBookingCookie();
               console.log(value);
               $('#cancel-popup-windo').css('display', 'none');
               $.post("/booking/cancel",value ,

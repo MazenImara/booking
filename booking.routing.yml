@@ -53,6 +53,15 @@ booking.logIn:
   requirements:
     _permission: 'access content'
 
+booking.app:
+  path: '/bookingApp/test'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAppController::test'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
 
 # Pages
 booking.booking:

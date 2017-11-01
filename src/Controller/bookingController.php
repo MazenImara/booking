@@ -105,7 +105,7 @@ class bookingController extends ControllerBase {
     $book = [
       'slotId' => $_POST['slotId'],
       'serviceId' => $_POST['serviceId'],
-      'clientId' => 1,
+      'client' => $_POST['client'],
     ];
     return new JsonResponse(functions::cancel($book));
   }
