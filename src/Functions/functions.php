@@ -88,15 +88,15 @@ class functions {
   static public function addDay($newDayTime, $monthId, $settings) {
     $day = date("d", $newDayTime);
     \Drupal::database()->insert('booking_day')
-      ->fields(['day', 'monthId', 'status', 'serviceId', 'timeStamp'])
-      ->values([$day, $monthId, 1, $settings['serviceId'], $newDayTime])
+      ->fields(['day', 'monthId', 'status', 'serviceId', 'date', 'timeStamp'])
+      ->values([$day, $monthId, 1, $settings['serviceId'], date("d-m-Y", $newDayTime), $newDayTime])
       ->execute();
       $dayId = self::getLastId('booking_day');
       $workTime = ['start' => 8, 'end' => 17]; $serverCount = 1;
       $period = 60; $timeOff = [ 'start' => 12, 'end' => 1];
       $slotQuantity = ($workTime['end'] - $workTime['start']);
       $startTime = strtotime(date("Y/m/d",$newDayTime)) + (8*60*60);
-      foreach (self::getServiceServers($serviceId) as $server) {
+      foreach (self::getServiceServers($settings['serviceId']) as $server) {
         for ($i=0; $i < $slotQuantity; $i++) {
           $slot = ['dayId' => $dayId, 'period' => $period, 'status' => 1, 'startTime' => $startTime, 'serverId' => $server['id']];
           self::addSlot($slot);
@@ -161,7 +161,7 @@ class functions {
       }
     return $id;
   }
-  static public function getServices($id) {
+  static public function getServices($id=NULL) {
     $services = NULL;
     $query = \Drupal::database()->select('booking_service', 'q')
       ->fields('q', ['id', 'title']);
@@ -513,7 +513,7 @@ class functions {
 
     }
     else{
-      $a = ['book' => 'you alrady booked'];
+      $a = $book['client'];
     }
 
     return $a;
@@ -568,5 +568,46 @@ class functions {
     return $data;
   }
 
+  static public function getDayDate($data) {
+    $day = null;
+    $result = \Drupal::database()->select('booking_day', 'q')
+      ->fields('q', ['id', 'day', 'monthId', 'status', 'serviceId', 'timeStamp', "date"])
+      ->condition('date', $data['date'])
+      ->execute();
+    while ($row = $result->fetchAssoc()) {
+      $day = [
+        'id' => $row['id'],
+        'day' => $row['day'],
+        'monthId' => $row['monthId'],
+        'serviceId' => $row['serviceId'],
+        'status' => $row['status'],
+        'timeStamp' => $row['timeStamp'],
+        'date' => $row['date'],
+        'slots' => [],
+      ];
+    }
+    $slots = self::getSlots($day['id']);
+    foreach ($slots as $slot) {
+      if ($slot['status'] == 1) {
+        array_push($day['slots'], $slot);
+      }
+      else{
+        self::try($data['client']['id'], self::getBookBySlotId($slot['id'])['client']['id']);
+        if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
+          array_push($day['slots'], $slot);
+        }
+      }
+    }
+
+    return $day;
+  }
+
+  // test function
+  static public function try($name,$value) {
+    \Drupal::database()->insert('booking_test')
+      ->fields(['value', 'name'])
+      ->values([$value, $name])
+      ->execute();
+  }
 
 } //end of class

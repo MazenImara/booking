@@ -90,10 +90,14 @@ class bookingController extends ControllerBase {
  * ajax response
  */
   public function book() {
+    $client = json_decode($_POST['client'], true);
+    if ($client == NULL) {
+      $client = $_POST['client'];
+    }
     $book = [
       'slotId' => $_POST['slotId'],
       'serviceId' => $_POST['serviceId'],
-      'client' => $_POST['client'],
+      'client' => $client,
     ];
     return new JsonResponse(functions::book($book));
   }
@@ -102,10 +106,14 @@ class bookingController extends ControllerBase {
  * ajax response
  */
   public function cancel() {
+    $client = json_decode($_POST['client'], true);
+    if ($client == NULL) {
+      $client = $_POST['client'];
+    }
     $book = [
       'slotId' => $_POST['slotId'],
       'serviceId' => $_POST['serviceId'],
-      'client' => $_POST['client'],
+      'client' => $client,
     ];
     return new JsonResponse(functions::cancel($book));
   }

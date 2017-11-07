@@ -53,11 +53,11 @@ booking.logIn:
   requirements:
     _permission: 'access content'
 
-booking.app:
-  path: '/bookingApp/test'
+booking.getDay:
+  path: '/bookingAjax/getDay'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingAppController::test'
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::getDay'
   methods:  [POST]
   requirements:
     _permission: 'access content'

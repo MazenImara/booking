@@ -116,6 +116,11 @@ function booking_schema() {
           'length' => 255,
           'not null' => TRUE,
         ],
+        'date' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
       ],
       'primary key' => ['id'],
     ];

@@ -3,13 +3,15 @@
     attach: function (context, settings) {
       $('body', context).once('booking').each(function () {
 //start
-
+        var dayId = 'id' ;
+        $(document).on("click",".day", function(){
+          dayId = $(this).attr('id');
+        });
+        $('#client').click(function(event) {
+          alert(dayId);
+        });
         $('#test').click(function(event) {
-          $.post("/bookingApp/test",value ,
-            function(data, status){
-              console.log(data);
-            }
-          );
+          $('#'+dayId).trigger('click');
         });
 
         $('#reload').click(function(event) {
@@ -24,6 +26,7 @@
           $.post("/getdataclient",value ,
             function(data, status){
               bookingCalendar(data);
+              $('#'+dayId).trigger('click');
             }
           );
         }
