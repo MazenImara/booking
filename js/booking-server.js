@@ -47,13 +47,7 @@
 
 
 
-          /*
-          $http.post('/getdataclient', {name: 'mazen'}).then(function (response) {
-            $scope.content = response.data;
-          }, function (response) {
-          // this function handles error
-          });
-          */
+
 
         });// end of ctr
 

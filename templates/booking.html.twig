@@ -8,6 +8,42 @@
 <span id="client">Hi Mazen</span>
 <span class="booking-logOut booking-logedOut">{{'Log out'| trans}}</span>
 
+
+
+
+<p>A popup datepicker <input type="text" id="popupDatepicker"></p>
+<p>Or inline</p>
+<div id="inlineDatepicker"></div>
+
+<div id="bookingCtrl" ng-app="bookingClient" ng-controller="bookingCtrl">
+
+  <table>
+    <tr>
+      <th>Time</th>
+      <th>Server Name</th>
+    </tr>
+    <tr ng-repeat="slot in content.slots">
+      <td>{[{slot.start}]} - {[{slot.end}]}</td>
+      <td>{[{slot.server.name}]}{[{slot.status}]}</td>
+      <td ng-if="slot.status == 1">
+        <button class="book-slot" id="{[{slot.id}]}" ng-click="book(slot.id)">
+          <input type="hidden" value="{&quot;slotId&quot;:{[{slot.id}]},&quot;serviceId&quot;:1}">
+          Book
+        </button>
+      </td>
+      <td ng-if="slot.status == 0">
+        <button class="book-slot" id="{[{slot.id}]}" ng-click="cancel(slot.id)">
+          <input type="hidden" value="{&quot;slotId&quot;:{[{slot.id}]},&quot;serviceId&quot;:1}">
+          Cancel
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
 {#<div class="booking-calendar">
   <div id="calendarContainer"></div>
   <div id="organizerContainer" style="margin-left: 8px;"></div>
@@ -64,4 +100,8 @@
     <button id="cancel-cancel" name="book-cancel" class="" >{{'Cancel'| trans}}</button>
   </div>
 </div>
+
+
+
+
 

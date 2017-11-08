@@ -3,15 +3,68 @@
     attach: function (context, settings) {
       $('body', context).once('booking').each(function () {
 //start
+        function toDay() {
+          d = new Date();
+          day = d.getDate();
+          month = d.getMonth()+1;
+          year = d.getFullYear();
+          if (day < 10)
+            formatedDate = '0' + day + '-' + month + '-' + year;
+          else
+            formatedDate = day + '-' + month + '-' + year;
+          return formatedDate;
+        }
+
+        $(function() {
+          $('#popupDatepicker').datepick({onSelect: showDate});
+          //$('#inlineDatepicker').datepick({onSelect: showDate});
+        });
+        var selectedDay = toDay();
+        function showDate(date) {
+          d = new Date(date);
+          day = d.getDate();
+          month = d.getMonth()+1;
+          year = d.getFullYear();
+          if (day < 10)
+            formatedDate = '0' + day + '-' + month + '-' + year;
+          else
+            formatedDate = day + '-' + month + '-' + year;
+          selectedDay = formatedDate;
+          angular.element($(bookingCtrl)).scope().dayData(formatedDate, getBookingCookie());
+        }
+        function loadDay() {
+          angular.element($(bookingCtrl)).scope().dayData(selectedDay, getBookingCookie());
+        }
+        var myApp = angular.module('bookingClient', []).config(function($interpolateProvider){
+          $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+        });
+        myApp.controller('bookingCtrl', function ($scope, $http, $log, $filter) {
+
+
+          $scope.dayData = function (date, client) {
+            $http.post('/bookingAjax/getDay', {date: date, client: client}).then(function (response) {
+              $scope.content = response.data;
+            }, function (response) {
+                      // this function handles error
+            });
+          }
+          $scope.dayData(toDay(),getBookingCookie());
+          $scope.book = function (id) {
+            book(id);
+          }
+
+          $scope.cancel = function (id) {
+            cancel(id);
+          }
+        });//end of ctrl
+
+
         var dayId = 'id' ;
         $(document).on("click",".day", function(){
           dayId = $(this).attr('id');
         });
         $('#client').click(function(event) {
           alert(dayId);
-        });
-        $('#test').click(function(event) {
-          $('#'+dayId).trigger('click');
         });
 
         $('#reload').click(function(event) {
@@ -47,6 +100,7 @@
               $.post("/booking/book",value ,
                 function(data, status){
                   loadData();
+                  loadDay();
                 }
               );
             }
@@ -72,6 +126,7 @@
               $.post("/booking/cancel",value ,
                 function(data, status){
                   loadData();
+                  loadDay();
                 }
               );
             }
@@ -163,6 +218,7 @@
           $.removeCookie("booking_kookie");
           isLogIn();
           loadData();
+          loadDay();
         });
 
         $('#booking-logIn').submit(function(event) {
@@ -175,6 +231,7 @@
                 isLogIn();
                 $('.booking-popup-text').text('Hello '+ data.name);
                 loadData();
+                loadDay();
               }
               else{
                 $('p').append('<p style="color:red">* Wrong password <a href="">Resend password to this email</a></p>');
@@ -192,6 +249,17 @@
           $('#book-popup-windo').css('display', 'none');
           $('.booking-windo-close').hide();
         });
+      // start angularjs
+
+
+
+
+
+
+
+
+
+
 
 
 

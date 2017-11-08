@@ -2,9 +2,13 @@ booking_booking:
   css:
     layout:
       css/booking-booking.css: {}
+      css/jquery.datepick.css: {}
   js:
     js/booking-booking.js: {}
     js/calendarlib.js: {}
+    js/angular.min.js: {}
+    js/jquery.plugin.js: {}
+    js/jquery.datepick.js: {}
   dependencies:
     - core/jquery
     - core/jquery.once

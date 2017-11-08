@@ -588,12 +588,23 @@ class functions {
     }
     $slots = self::getSlots($day['id']);
     foreach ($slots as $slot) {
+      $slot['start'] =  date("H:i",$slot['startTime']);
+      $slot['end'] = date("H:i",$slot['startTime'] + ($slot['period'] * 60));
+      $bookButton = '<button class="book-slot" id="'.$slot['id'].'" onclick="book('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
+                   $slot['id'] .','.'"serviceId":'. $day['serviceId']
+                   .'}\'> Book</button> ';
+      $cancelButton = '<button class="book-slot" id="'.$slot['id'].'" onclick="cancel('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
+                   $slot['id'] .','.'"serviceId":'. $day['serviceId']
+                   .'}\'>Cancel</button> ';
       if ($slot['status'] == 1) {
+        $slot['button'] = $bookButton;
         array_push($day['slots'], $slot);
       }
       else{
+
         self::try($data['client']['id'], self::getBookBySlotId($slot['id'])['client']['id']);
         if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
+          $slot['button'] = $cancelButton;
           array_push($day['slots'], $slot);
         }
       }
