@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\conventus_ajax_statistics\Form;
+namespace Drupal\booking\Form;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
@@ -48,33 +48,83 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'popular_settings_form';
+    return 'bookingSettingsForm';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['conventus_ajax_statistics.settings'];
+    return ['booking.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('conventus_ajax_statistics.settings');
+    $config = $this->config('booking.settings');
 
-    // Content counter settings.
-    $form['content'] = array(
-      '#type' => 'details',
-      '#title' => t('popular nods module settings'),
-      '#open' => TRUE,
-    );
-    $form['content']['period'] = array(
-      '#type' => 'number',
+    $form['alowedBookNum'] = [
+      '#type' => 'textfield',
+      '#title' => t('Book number'),
+      '#placeholder' => '1',
+      '#default_value' => $config->get('alowedBookNum'),
+      '#description' => t('Alowed number of booking for each client.'),
+      '#size' => 20,
+      '#required' => "True",
+    ];
+
+    $form['period'] = [
+      '#type' => 'textfield',
       '#title' => t('Period'),
+      '#placeholder' => '60',
       '#default_value' => $config->get('period'),
-      '#description' => t('Number of days, if empty the defult is 7 days'),
+      '#description' => t('Period for each slot in minutes ex: 60 min.'),
+      '#size' => 20,
+      '#required' => "True",
+    ];
+
+    $form['dayStart'] = [
+      '#type' => 'textfield',
+      '#title' => t('Day start time'),
+      '#placeholder' => '8:00',
+      '#default_value' => $config->get('dayStart'),
+      '#description' => t('Time for starting working day ex 8:00.'),
+      '#size' => 20,
+      '#date_date_element' => 'none',
+      '#date_time_element' => 'time',
+      '#required' => "True",
+    ];
+
+    $form['dayEnd'] = [
+      '#type' => 'textfield',
+      '#title' => t('Day end time'),
+      '#placeholder' => '17:00',
+      '#default_value' => $config->get('dayEnd'),
+      '#description' => t('Time for end of working day ex 17:00.'),
+      '#size' => 20,
+      '#date_date_element' => 'none',
+      '#date_time_element' => 'time',
+      '#required' => "True",
+    ];
+
+    $options = [];
+    $options["1"] = t('Monday');
+    $options["2"] = t('Tuesday');
+    $options["3"] = t('Wednesday');
+    $options["4"] = t('Thursday');
+    $options["5"] = t('Friday');
+    $options["6"] = t('Saturday');
+    $options["7"] = t('Sunday');
+
+
+    $form['daysOff'] = array(
+      '#title' => t(''),
+      '#type' => 'checkboxes',
+      '#description' => t(''),
+      '#options' => $options,
+      '#default_value' => ['6', '7'],
+      '#required' => "True",
     );
 
     return parent::buildForm($form, $form_state);
@@ -84,9 +134,17 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('conventus_ajax_statistics.settings')
+    $this->config('booking.settings')
+      ->set('alowedBookNum', $form_state->getValue('alowedBookNum'))
       ->set('period', $form_state->getValue('period'))
+      ->set('dayEnd', $form_state->getValue('dayEnd'))
+      ->set('dayStart', $form_state->getValue('dayStart'))
+      ->set('daysOff', $form_state->getValue('daysOff'))
       ->save();
+
+
+
+
     parent::submitForm($form, $form_state);
   }
 

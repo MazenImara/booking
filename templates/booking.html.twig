@@ -11,16 +11,21 @@
 
 
 
-<p>A popup datepicker <input type="text" id="popupDatepicker"></p>
-<p>Or inline</p>
-<div id="inlineDatepicker"></div>
+
+
+
 
 <div id="bookingCtrl" ng-app="bookingClient" ng-controller="bookingCtrl">
 
   <table>
     <tr>
-      <th>Time</th>
-      <th>Server Name</th>
+      <th><button ng-click="previous()">{{'Previous'|trans}}</button></th>
+      <th> <input type="text" id="popupDatepicker" ng-model="date"><button ng-click="toDay()">{{'Today'|trans}}</button></th>
+      <th><button ng-click="next()">{{'Next'|trans}}</button></th>
+    </tr>
+    <tr>
+      <th>{{'Time'|trans}}</th>
+      <th>{{'Server Name'|trans}}</th>
     </tr>
     <tr ng-repeat="slot in content.slots">
       <td>{[{slot.start}]} - {[{slot.end}]}</td>
@@ -39,18 +44,7 @@
       </td>
     </tr>
   </table>
-</div>
-
-
-
-
-{#<div class="booking-calendar">
-  <div id="calendarContainer"></div>
-  <div id="organizerContainer" style="margin-left: 8px;"></div>
-</div>#}
-<div class="wrapper">
-  <div id="calendarContainer"></div>
-  <div id="organizerContainer" style="margin-left: 8px;"></div>
+  <h1 ng-if="content.status == 0"  style="color:red;align:center"> {{'The day is off'|trans}}</h1>
 </div>
 
 <!-- The Modal -->

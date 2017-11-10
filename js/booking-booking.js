@@ -3,37 +3,17 @@
     attach: function (context, settings) {
       $('body', context).once('booking').each(function () {
 //start
-        function toDay() {
-          d = new Date();
-          day = d.getDate();
-          month = d.getMonth()+1;
-          year = d.getFullYear();
-          if (day < 10)
-            formatedDate = '0' + day + '-' + month + '-' + year;
-          else
-            formatedDate = day + '-' + month + '-' + year;
-          return formatedDate;
-        }
-
         $(function() {
           $('#popupDatepicker').datepick({onSelect: showDate});
           //$('#inlineDatepicker').datepick({onSelect: showDate});
         });
-        var selectedDay = toDay();
+        var selectedDay = new Date();
         function showDate(date) {
-          d = new Date(date);
-          day = d.getDate();
-          month = d.getMonth()+1;
-          year = d.getFullYear();
-          if (day < 10)
-            formatedDate = '0' + day + '-' + month + '-' + year;
-          else
-            formatedDate = day + '-' + month + '-' + year;
-          selectedDay = formatedDate;
-          angular.element($(bookingCtrl)).scope().dayData(formatedDate, getBookingCookie());
+          selectedDay = date;
+          angular.element($(bookingCtrl)).scope().dayData(formatDate(date), getBookingCookie());
         }
         function loadDay() {
-          angular.element($(bookingCtrl)).scope().dayData(selectedDay, getBookingCookie());
+          angular.element($(bookingCtrl)).scope().dayData(formatDate(selectedDay), getBookingCookie());
         }
         var myApp = angular.module('bookingClient', []).config(function($interpolateProvider){
           $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
@@ -48,7 +28,8 @@
                       // this function handles error
             });
           }
-          $scope.dayData(toDay(),getBookingCookie());
+
+          $scope.dayData(formatDate(selectedDay),getBookingCookie());
           $scope.book = function (id) {
             book(id);
           }
@@ -56,34 +37,36 @@
           $scope.cancel = function (id) {
             cancel(id);
           }
+
+          $scope.next = function () {
+            d = new Date(selectedDay);
+            d.setDate(d.getDate()+1);
+            $scope.date = formatDate(d);
+            selectedDay = d;
+            $scope.dayData(formatDate(selectedDay),getBookingCookie());
+          }
+
+          $scope.previous = function () {
+            d = new Date(selectedDay);
+            d.setDate(d.getDate()-1);
+            $scope.date = formatDate(d);
+            selectedDay = d;
+            $scope.dayData(formatDate(selectedDay),getBookingCookie());
+          }
+
+          $scope.toDay = function () {
+            d = new Date();
+            $scope.date = formatDate(d);
+            selectedDay = d;
+            $scope.dayData(formatDate(selectedDay),getBookingCookie());
+          }
+
         });//end of ctrl
 
 
-        var dayId = 'id' ;
-        $(document).on("click",".day", function(){
-          dayId = $(this).attr('id');
-        });
-        $('#client').click(function(event) {
-          alert(dayId);
-        });
-
         $('#reload').click(function(event) {
-          loadData();
+          loadDay();
         });
-
-        loadData();
-        function loadData() {
-          $('div').remove('.calendar');
-          $('div').remove('.events');
-          value = {cookieClient: getBookingCookie()};
-          $.post("/getdataclient",value ,
-            function(data, status){
-              bookingCalendar(data);
-              $('#'+dayId).trigger('click');
-            }
-          );
-        }
-
         book = function (id){
           $('.book-form').show();
           Id = id;
@@ -99,7 +82,7 @@
               $('#book-popup-windo').css('display', 'none');
               $.post("/booking/book",value ,
                 function(data, status){
-                  loadData();
+
                   loadDay();
                 }
               );
@@ -125,7 +108,7 @@
               $('#cancel-popup-windo').css('display', 'none');
               $.post("/booking/cancel",value ,
                 function(data, status){
-                  loadData();
+
                   loadDay();
                 }
               );
@@ -217,7 +200,7 @@
         $('.booking-logOut').click(function(event) {
           $.removeCookie("booking_kookie");
           isLogIn();
-          loadData();
+
           loadDay();
         });
 
@@ -230,7 +213,7 @@
                 setBookingCookie(data);
                 isLogIn();
                 $('.booking-popup-text').text('Hello '+ data.name);
-                loadData();
+
                 loadDay();
               }
               else{
@@ -250,6 +233,24 @@
           $('.booking-windo-close').hide();
         });
       // start angularjs
+
+      function formatDate(strDate) {
+        d = new Date(strDate);
+        day = d.getDate();
+        month = d.getMonth()+1;
+        year = d.getFullYear();
+        if (day < 10)
+          date = '0' + day + '-';
+        else
+          date = day + '-';
+        if (month < 10)
+          date = date + '0' + month + '-';
+        else
+          date = date + month + '-';
+        date = date + year;
+
+        return date;
+      }
 
 
 

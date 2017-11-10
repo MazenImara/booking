@@ -1,18 +1,10 @@
 # ajax
-booking.getData:
-  path: '/getdataclient'
-  defaults:
-    _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::getDataClient'
-  methods:  [POST]
-  requirements:
-    _permission: 'access content'
 
 booking.book:
   path: '/booking/book'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::book'
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::book'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -21,7 +13,7 @@ booking.cancel:
   path: '/booking/cancel'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::cancel'
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::cancel'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -30,7 +22,7 @@ booking.isEmailExist:
   path: '/booking/isemailexist'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::isEmailExist'
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::isEmailExist'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -39,7 +31,7 @@ booking.signUp:
   path: '/booking/signup'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::signUp'
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::signUp'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -48,7 +40,7 @@ booking.logIn:
   path: '/booking/login'
   defaults:
     _title: ''
-    _controller: '\Drupal\booking\Controller\bookingController::LogIn'
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::LogIn'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -95,7 +87,17 @@ booking.server:
     _title: ''
   requirements:
     _permission: 'manage booking'
+
 # Forms
+
+booking.settings:
+  path: '/booking/settings'
+  defaults:
+    _title: ''
+    _form: '\Drupal\booking\Form\SettingsForm'
+  requirements:
+    _permission: 'manage booking'
+
 booking.addserviceForm:
   path: '/addserviceform'
   defaults:

@@ -3,9 +3,7 @@
 namespace Drupal\booking\Functions;
 
 class functions {
-  static public function test() {
-    return 'from test fun';
-  }
+
   static public function addService($title)
   {
     \Drupal::database()->insert('booking_service')
@@ -41,6 +39,7 @@ class functions {
     return self::getLastId('booking_client');
   }
   static public function addWorkDays($settings) {
+/*
     for ($i=0; $i < $settings['quantity']; $i++) {
       $lastDay = self::getLastDay();
       if ($lastDay != NULL) {
@@ -51,53 +50,54 @@ class functions {
       }
       $date = date("Y-m-d", $lastTime);
       $newDayTime = strtotime($date. " +1 days") ;
-
-      $year = date('Y',$newDayTime);
-      $yearId = self::isYear($year,$settings['serviceId']);
-      if ($yearId == NULL) {
-        self::addYear($year, $settings);
-        $yearId = self::getLastId('booking_year');
-      }
-      $month = date('m',$newDayTime);
-      $monthId = self::isMonth($month, $yearId);
-      if ($monthId == NULL) {
-        self::addMonth($month, $yearId);
-        $monthId = self::getLastId('booking_month');
-      }
-
-      self::addDay($newDayTime, $monthId, $settings);
-
-
+      self::addDay($newDayTime, $settings);
       drupal_set_message('time: '. date("Y-m-d", $newDayTime));
+    }*/
+    if ((float)strtotime('10-11-2017') >  (float)strtotime('9-11-2017')) {
+      drupal_set_message('yes');
     }
+    else
+      drupal_set_message('no');
   }
 
-  static public function addYear($year, $settings) {
-    \Drupal::database()->insert('booking_year')
-      ->fields(['year', 'serviceId'])
-      ->values([2017, $settings['serviceId']])
-      ->execute();
-  }
-  static public function addMonth($month, $yearId)
+  static public function config()
   {
-    \Drupal::database()->insert('booking_month')
-      ->fields(['month', 'yearId'])
-      ->values([$month, $yearId])
-      ->execute();
+    $config = [];
+    $conf = \Drupal::config('booking.settings');
+    $config['alowedBookNum'] = $conf->get('alowedBookNum');
+    $config['period'] = $conf->get('period');
+    $config['daysOff'] = $conf->get('daysOff');
+    $config['dayStart'] = [
+      'h' => explode(':',$conf->get('dayStart'))[0],
+      'm' => explode(':',$conf->get('dayStart'))[1],
+    ];
+    $config['dayEnd'] = [
+      'h' => explode(':',$conf->get('dayEnd'))[0],
+      'm' => explode(':',$conf->get('dayEnd'))[1],
+    ];
+    return $config;
   }
-  static public function addDay($newDayTime, $monthId, $settings) {
+
+  static public function addDay($newDayTime, $settings) {
     $day = date("d", $newDayTime);
+    $conf = self::config();
+    if($conf['daysOff'][date('N', $newDayTime)] == '0')
+      $status = 1;
+    else
+      $status = 0;
     \Drupal::database()->insert('booking_day')
-      ->fields(['day', 'monthId', 'status', 'serviceId', 'date', 'timeStamp'])
-      ->values([$day, $monthId, 1, $settings['serviceId'], date("d-m-Y", $newDayTime), $newDayTime])
+      ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp'])
+      ->values([$day, $status, $settings['serviceId'], date("d-m-Y", $newDayTime), $newDayTime])
       ->execute();
-      $dayId = self::getLastId('booking_day');
-      $workTime = ['start' => 8, 'end' => 17]; $serverCount = 1;
-      $period = 60; $timeOff = [ 'start' => 12, 'end' => 1];
-      $slotQuantity = ($workTime['end'] - $workTime['start']);
-      $startTime = strtotime(date("Y/m/d",$newDayTime)) + (8*60*60);
       foreach (self::getServiceServers($settings['serviceId']) as $server) {
+        $period = $conf['period'];
+        $slotQuantity = ($conf['dayEnd']['h'] - $conf['dayStart']['h']) / ($period/60);
+        $diffMin = $conf['dayEnd']['m'] - $conf['dayStart']['m'];
+        $dayId = self::getLastId('booking_day');
+        $startTime = strtotime(date("Y/m/d",$newDayTime)) + ($conf['dayStart']['h']*60*60) + ($conf['dayStart']['m']*60);
         for ($i=0; $i < $slotQuantity; $i++) {
+          if (($i + 1)==$slotQuantity)
+            $period = $period + $diffMin;
           $slot = ['dayId' => $dayId, 'period' => $period, 'status' => 1, 'startTime' => $startTime, 'serverId' => $server['id']];
           self::addSlot($slot);
           $startTime = $startTime + ($period * 60);
@@ -115,8 +115,6 @@ class functions {
   {
     $query = \Drupal::database()->delete('booking_slot', [])->execute();
     $query = \Drupal::database()->delete('booking_day', [])->execute();
-    $query = \Drupal::database()->delete('booking_month', [])->execute();
-    $query = \Drupal::database()->delete('booking_year', [])->execute();
     drupal_set_message('all data deleted');
   }
 
@@ -171,7 +169,6 @@ class functions {
         $services = [
           'id' => $row['id'],
           'title' => $row['title'],
-          'years' => self::getYears($row['id']),
         ];
       }
     }
@@ -210,7 +207,7 @@ class functions {
   static public function getLastDay() {
     $day = NULL;
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'monthId', 'status', 'serviceId', 'timeStamp'])
+      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
       ->orderBy('id', 'DESC')
       ->range(0,1)
       ->execute();
@@ -218,7 +215,6 @@ class functions {
         $day = [
           'id' => $row['id'],
           'day' => $row['day'],
-          'monthId' => $row['monthId'],
           'status' => $row['status'],
           'serviceId' => $row['serviceId'],
           'timeStamp' => $row['timeStamp'],
@@ -226,62 +222,6 @@ class functions {
       }
     return $day;
   }
-  static public function getYears($serviceId) {
-    $years = [];
-    $result = \Drupal::database()->select('booking_year', 'q')
-      ->fields('q', ['id', 'year','serviceId'])
-      ->condition('serviceId', [$serviceId])
-      ->execute();
-      while ($row = $result->fetchAssoc()) {
-        array_push($years, [
-            'id' => $row['id'],
-            'year' => $row['year'],
-            'serviceId' => $row['serviceId'],
-            'months' => self::getMonths($row['id']),
-          ]);
-      }
-
-    return $years;
-  }
-
-  static public function getMonths($yearId) {
-    $months = [];
-    $result = \Drupal::database()->select('booking_month', 'q')
-      ->fields('q', ['id', 'month','yearId'])
-      ->condition('yearId', [$yearId])
-      ->execute();
-    while ($row = $result->fetchAssoc()) {
-      array_push($months, [
-        'id' => $row['id'],
-        'month' => $row['month'],
-        'yearId' => $row['yearId'],
-        'days' => self::getDays($row['id']),
-      ]);
-    }
-
-    return $months;
-  }
-  static public function getDays($monthId) {
-    $days = [];
-    $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'monthId', 'status', 'serviceId', 'timeStamp'])
-      ->condition('monthId', [$monthId])
-      ->execute();
-    while ($row = $result->fetchAssoc()) {
-      array_push($days, [
-        'id' => $row['id'],
-        'day' => $row['day'],
-        'monthId' => $row['monthId'],
-        'serviceId' => $row['serviceId'],
-        'status' => $row['status'],
-        'timeStamp' => $row['timeStamp'],
-        'slots' => self::getSlots($row['id']),
-      ]);
-    }
-
-    return $days;
-  }
-
   static public function getSlots($dayId)
   {
     $slots = [];
@@ -350,34 +290,8 @@ class functions {
     return $server;
   }
   // is function
-  static public function isYear($year, $serviceId)
-  {
-    $yearId = NULL;
-    $result = \Drupal::database()->select('booking_year', 'q')
-      ->fields('q', ['id'])
-      ->condition('year', [$year])
-      ->condition('serviceId', [$serviceId])
-      ->execute();
-    while ($row = $result->fetchAssoc()) {
-      $yearId =  $row['id'];
-    }
 
-    return $yearId;
-  }
-  static public function isMonth($month, $yearId)
-  {
-    $monthId = NULL;
-    $result = \Drupal::database()->select('booking_month', 'q')
-      ->fields('q', ['id'])
-      ->condition('yearId', [$yearId])
-      ->condition('month', [$month])
-      ->execute();
-    while ($row = $result->fetchAssoc()) {
-      $monthId =  $row['id'];
-    }
 
-    return $monthId;
-  }
   static public function isSlotBooked($book) {
     $bookedSlot = NULL;
     $result = \Drupal::database()->select('booking_book', 'q')
@@ -450,61 +364,9 @@ class functions {
 
 
   // ajax
-  static public function getTable($serviceId) {
-    $data = ['years' => []];
-    $nextWeek = date('W',REQUEST_TIME) + 1;
-    $data = self::getServices($serviceId);
-    return $data;
-  }
 
-  static public function getDataClient($client) {
-    $service = self::getServices(1);
-    $data =['years' => []];
-    $y = 0;
-    foreach ($service['years'] as $year) {
-      array_push($data['years'], ['int' => $year['year'], 'months' =>[]]);
-      $m = 0;
-      foreach ($year['months'] as $month) {
-        array_push($data['years'][$y]['months'], ['int' => $month['month'], 'days' => []]);
-        $d = 0;
-        foreach ($month['days'] as $day) {
-          array_push($data['years'][$y]['months'][$m]['days'], ['int' => $day['day'], 'events' => []]);
-          foreach ($day['slots'] as $slot) {
-            $startTime = date("H:i",$slot['startTime']);
-            $endTime = date("H:i",$slot['startTime'] + ($slot['period'] * 60));
-            $bookText = '<button class="book-slot" id="'.$slot['id'].'" onclick="book('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
-             $slot['id'] .','.'"serviceId":'. $day['serviceId']
-             .'}\'> Book</button> ' . $slot['server']['name'];
-             $cancelText = '<button class="book-slot" id="'.$slot['id'].'" onclick="cancel('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
-             $slot['id'] .','.'"serviceId":'. $day['serviceId']
-             .'}\'>Cancel</button> ' . $slot['server']['name'];
-            if ($slot['status']) {
-              array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
-                'startTime' => $startTime,
-                'endTime' => $endTime,
-                'mTime' => '>',
-                'text' =>  $bookText,
-              ]);
-            }
-            else{
-              if ($client['id'] == self::getBookBySlotId($slot['id'])['client']['id'] ) {
-                array_push($data['years'][$y]['months'][$m]['days'][$d]['events'],[
-                  'startTime' => $startTime,
-                  'endTime' => $endTime,
-                  'mTime' => '>',
-                  'text' =>  $cancelText,
-                ]);
-              }
-            }
-          }
-          $d++;
-        }
-        $m++;
-      }
-      $y++;
-    }
-    return $data;
-  }
+
+
 
   static public function book($book) {
     if (self::isSlotBooked($book) == NULL && self::isEmailExist($book['client']['email'], 'booking_client') != NULL) {
@@ -571,14 +433,13 @@ class functions {
   static public function getDayDate($data) {
     $day = null;
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'monthId', 'status', 'serviceId', 'timeStamp', "date"])
+      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
       $day = [
         'id' => $row['id'],
         'day' => $row['day'],
-        'monthId' => $row['monthId'],
         'serviceId' => $row['serviceId'],
         'status' => $row['status'],
         'timeStamp' => $row['timeStamp'],
@@ -586,31 +447,25 @@ class functions {
         'slots' => [],
       ];
     }
-    $slots = self::getSlots($day['id']);
-    foreach ($slots as $slot) {
-      $slot['start'] =  date("H:i",$slot['startTime']);
-      $slot['end'] = date("H:i",$slot['startTime'] + ($slot['period'] * 60));
-      $bookButton = '<button class="book-slot" id="'.$slot['id'].'" onclick="book('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
-                   $slot['id'] .','.'"serviceId":'. $day['serviceId']
-                   .'}\'> Book</button> ';
-      $cancelButton = '<button class="book-slot" id="'.$slot['id'].'" onclick="cancel('.$slot['id'].')"><input type="hidden" value=\'{"slotId":' .
-                   $slot['id'] .','.'"serviceId":'. $day['serviceId']
-                   .'}\'>Cancel</button> ';
-      if ($slot['status'] == 1) {
-        $slot['button'] = $bookButton;
-        array_push($day['slots'], $slot);
-      }
-      else{
-
-        self::try($data['client']['id'], self::getBookBySlotId($slot['id'])['client']['id']);
-        if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
-          $slot['button'] = $cancelButton;
+    if ($day['status'] != '0' and (float)strtotime($data['date']) >=  (float)strtotime(date('d-m-Y', REQUEST_TIME)) ){
+      $slots = self::getSlots($day['id']);
+      foreach ($slots as $slot) {
+        $slot['start'] =  date("H:i",$slot['startTime']);
+        $slot['end'] = date("H:i",$slot['startTime'] + ($slot['period'] * 60));
+        if ($slot['status'] == 1) {
           array_push($day['slots'], $slot);
         }
+        else{
+          if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
+            array_push($day['slots'], $slot);
+          }
+        }
       }
+      return $day;
     }
-
-    return $day;
+    else{
+      return $day;
+    }
   }
 
   // test function

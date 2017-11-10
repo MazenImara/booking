@@ -103,10 +103,6 @@ function booking_schema() {
           'not null' => TRUE,
           'default' => 1,
         ],
-        'monthId' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
         'serviceId' => [
           'type' => 'int',
           'not null' => TRUE,
@@ -303,46 +299,5 @@ function booking_schema() {
     ];
   }
 
-  if (!db_table_exists('booking_year')) {
-    $schema['booking_year'] = [
-      'fields' => [
-        'id' => [
-          'type' => 'serial',
-          'unsigned' => TRUE,
-          'not null' => TRUE,
-        ],
-        'year' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
-        'serviceId' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
-      ],
-      'primary key' => ['id'],
-    ];
-  }
-
-  if (!db_table_exists('booking_month')) {
-    $schema['booking_month'] = [
-      'fields' => [
-        'id' => [
-          'type' => 'serial',
-          'unsigned' => TRUE,
-          'not null' => TRUE,
-        ],
-        'month' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
-        'yearId' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
-      ],
-      'primary key' => ['id'],
-    ];
-  }
   return $schema;
 }
