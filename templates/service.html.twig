@@ -1,8 +1,13 @@
 {{content.last}}
 {{content.service.title}}
+<h5> {{'Servers'|trans}}</h5>
+<ul>
+  {% for server in content.servers %}
+    <li><a href="/booking/server/{{server.id}}">{{server.name}}</a></li>
+  {% endfor %}
+</ul>
+<h5> {{'Add server'|trans}}</h5>
 {{content.addServerForm}}
-{% for server in content.servers %}
-  <a href="/booking/server/{{server.id}}">{{server.name}}</a>  <br>
-{% endfor %}
 
+<h5> {{'Add working days'|trans}}</h5>
 {{content.addWorkDaysForm}}

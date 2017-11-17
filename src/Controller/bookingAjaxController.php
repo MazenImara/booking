@@ -32,6 +32,18 @@ class bookingAjaxController extends ControllerBase {
     return new JsonResponse(functions::getDayDate($data));
   }
 
+  public function getServerDay() {
+
+    $request = json_decode(file_get_contents("php://input"));
+    $data = [
+      'date' => $request->date,
+      'serverId' => json_decode(json_encode($request->serverId), True),
+    ];
+    //print_r($data);
+    //return new JsonResponse($data);
+    return new JsonResponse(functions::getDayDataServer($data));
+  }
+
 /**
  * getTable()
  * ajax response
@@ -71,6 +83,31 @@ class bookingAjaxController extends ControllerBase {
     ];
     return new JsonResponse(functions::cancel($book));
   }
+
+  public function deleteSlot() {
+    $request = json_decode(file_get_contents("php://input"));
+    $slotId = $request->slotId;
+    //return new JsonResponse($slotId);
+    return new JsonResponse(functions::deleteSlot($slotId));
+  }
+
+
+  public function adminCancelBook() {
+    $request = json_decode(file_get_contents("php://input"));
+    $slotId = $request->slotId;
+    //return new JsonResponse($slotId);
+    return new JsonResponse(functions::deleteBook($slotId));
+  }
+
+  public function editSlotTime() {
+    $request = json_decode(file_get_contents("php://input"));
+    $slotId = $request->slotId;
+    $startTime = $request->startTime;
+    $endTime = $request->endTime;
+    //return new JsonResponse($slotId);
+    return new JsonResponse(functions::editSlotTime($slotId, $startTime, $endTime));
+  }
+
 /**
  * isExist()
  * ajax response
@@ -105,6 +142,18 @@ class bookingAjaxController extends ControllerBase {
     ];
     return new JsonResponse(functions::clientLogIn($log));
   }
-
+  public function getClientBook() {
+    $client = json_decode($_POST['client'], true);
+    if ($client == NULL) {
+      $client = $_POST['client'];
+    }
+    if ($client == NULL) {
+      $request = json_decode(file_get_contents("php://input"));
+      $client = json_decode(json_encode($request->client), True);
+    }
+    //print_r($data);
+    //return new JsonResponse($client);
+    return new JsonResponse(functions::getClientBook($client));
+  }
 
 }// end of class

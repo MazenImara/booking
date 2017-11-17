@@ -67,14 +67,14 @@ class bookingController extends ControllerBase {
         ],
         'drupalSettings' => [
           'booking' => [
-            'content' => functions::getDataServer($id),
+            'content' => ['serverId' => $id],
           ]
         ]
       ],
       '#theme'      => 'server',
       '#content'    => [
         'server' => functions::getserver($id),
-        'data' => functions::getDataServer($id),
+        //'data' => functions::getDataServer($id),
       ],
     ];
   }

@@ -18,6 +18,24 @@ booking.cancel:
   requirements:
     _permission: 'access content'
 
+booking.adminCancelBook:
+  path: '/bookingAjax/adminCancelBook'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::adminCancelBook'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.editSlotTime:
+  path: '/bookingAjax/editSlotTime'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::editSlotTime'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
 booking.isEmailExist:
   path: '/booking/isemailexist'
   defaults:
@@ -50,6 +68,33 @@ booking.getDay:
   defaults:
     _title: ''
     _controller: '\Drupal\booking\Controller\bookingAjaxController::getDay'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.getClientBook:
+  path: '/bookingAjax/clientBook'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::getClientBook'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.getServerDay:
+  path: '/bookingAjax/getServerDay'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::getServerDay'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.deleteSlot:
+  path: '/booking/deleteSlot'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::deleteSlot'
   methods:  [POST]
   requirements:
     _permission: 'access content'
@@ -95,6 +140,14 @@ booking.settings:
   defaults:
     _title: ''
     _form: '\Drupal\booking\Form\SettingsForm'
+  requirements:
+    _permission: 'manage booking'
+
+booking.addServerDay:
+  path: '/booking/addServerDay'
+  defaults:
+    _title: ''
+    _form: '\Drupal\booking\Form\addServerDayForm'
   requirements:
     _permission: 'manage booking'
 

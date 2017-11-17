@@ -10,15 +10,21 @@
         var selectedDay = new Date();
         function showDate(date) {
           selectedDay = date;
-          angular.element($(bookingCtrl)).scope().dayData(formatDate(date), getBookingCookie());
+          client = getBookingCookie();
+          angular.element($(bookingCtrl)).scope().dayData(formatDate(date), client);
+          angular.element($(bookingCtrl)).scope().clientBook(client);
         }
         function loadDay() {
-          angular.element($(bookingCtrl)).scope().dayData(formatDate(selectedDay), getBookingCookie());
+          client = getBookingCookie();
+          angular.element($(bookingCtrl)).scope().dayData(formatDate(selectedDay), client);
+          angular.element($(bookingCtrl)).scope().clientBook(client);
         }
         var myApp = angular.module('bookingClient', []).config(function($interpolateProvider){
           $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
         });
         myApp.controller('bookingCtrl', function ($scope, $http, $log, $filter) {
+
+
 
 
           $scope.dayData = function (date, client) {
@@ -28,8 +34,6 @@
                       // this function handles error
             });
           }
-
-          $scope.dayData(formatDate(selectedDay),getBookingCookie());
           $scope.book = function (id) {
             book(id);
           }
@@ -60,6 +64,17 @@
             selectedDay = d;
             $scope.dayData(formatDate(selectedDay),getBookingCookie());
           }
+
+          $scope.clientBook = function (client) {
+            $http.post('/bookingAjax/clientBook', {client: client}).then(function (response) {
+              $scope.clientBooks = response.data;
+            }, function (response) {
+                      // this function handles error
+            });
+          }
+
+          $scope.clientBook(getBookingCookie());
+          $scope.dayData(formatDate(selectedDay),getBookingCookie());
 
         });//end of ctrl
 
@@ -183,11 +198,13 @@
         }
         isLogIn();
         function isLogIn() {
-          if (getBookingCookie()) {
+          client = getBookingCookie();
+          if (client) {
             $('.booking-logedIn').hide();
             $('.booking-logedOut').show();
             $('#book-confirm').removeAttr('disabled');
             $('#booking-logOut').show();
+            $('.client-name').text(client.name);
           }
           else{
             $('.booking-logedIn').show();

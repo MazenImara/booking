@@ -1,39 +1,68 @@
-{{content.server.name}}<br>
-{{content.data[0].year}}
+<div class="booking-server">
 
-<dir ng-app='bookingServer'>
-  <div ng-controller="bookingServerCtrl">
 
-    {{'Date'|trans}}:
-    <input size="4" ng-init="date.year=thisYear" placeholder="yyyy" ng-model="date.year">
-    <input size="2" ng-init="date.month=thisMonth" placeholder="mm" ng-model="date.month">
-    <input size="2" ng-init="date.day=today" placeholder="dd"  ng-model="date.day">
-    <input type="radio" value="0" ng-model="date.status"> {{'Booked'|trans}}
-    <input type="radio" value="1" ng-model="date.status"> {{'Unbooked'|trans}}
-    <button ng-click="clear()">{{'Clear'|trans}}</button><br>
-    <button ng-click="previous()">{{'Previous'|trans}}</button>
-    <button ng-click="todayFun()">{{'Today'|trans}}</button>
-    <button ng-click="next()">{{'Next'|trans}}</button>
+  {{content.server.name}}<br>
+  {{content.data[0].year}}
 
-    <table id="searchTextResults">
-      <tr>
-        <th>{{'Date'|trans}}</th>
-        <th>{{'Period'|trans}}</th>
-        <th>{{'Status'|trans}}</th>
-        <th>{{'Name'|trans}}</th>
-      </tr>
-      <tr ng-repeat="item in content | filter:date">
-        <td>{[{item.year}]}/{[{item.month}]}/{[{item.day}]}</td>
-        <td>{[{item.startTime}]} - {[{item.endTime}]}</td>
-        <td>{[{item.status}]}</td>
-        <td>{[{item.book.client.name}]}</td>
-      </tr>
-    </table>
-    <hr>
+  <dir ng-app='bookingServer'>
+    <div id="bookingServerCtrl" ng-controller="bookingServerCtrl">
+
+
+      <input type="radio" value="0" ng-model="date.status"> {{'Booked'|trans}}
+      <input type="radio" value="1" ng-model="date.status"> {{'Unbooked'|trans}}
+      <button ng-click="clear()">{{'Clear'|trans}}</button><br>
 
 
 
-  </div>
-</dir>
+
+      <table id="searchTextResults">
+        <tr>
+          <th><button ng-click="previous()">{{'Previous'|trans}}</button></th>
+          <th><input type="text" id="popupDatepicker" ng-model="select"><button ng-click="toDay()">{{'Today'|trans}}</button></th>
+          <th><button ng-click="next()">{{'Next'|trans}}</button></th>
+        </tr>
+        <tr>
+          <th>{{'Period'|trans}}</th>
+          <th>{{'Status'|trans}}</th>
+          <th>{{'Name'|trans}}</th>
+        </tr>
+        <tr ng-repeat="item in content.slots | filter:date | orderBy: 'startTimeStamp'" >
+          <td class="hidden">{[{item.startTimeStamp}]}</td>
+          <td ><span class="{[{style(item.status)}]}">{[{item.startTime}]} - {[{item.endTime}]}</span><span class="edit-time-span" ng-click="editSlot(item.id, item.startTime, item.endTime)">{{'Edit'|trans}}</span></td>
+          <td>{[{item.status}]}</td>
+          <td>{[{item.book.client.name}]}</td>
+          <td></td>
+        </tr>
+      </table>
+      <hr>
+
+
+
+      <!-- The Modal -->
+      <div id="server-edit-slot" class="modal" >
+        <!-- Modal content -->
+        <div class="modal-content  edit-time">
+          <form id="edit-form" class="edit-form">
+            <input class="time" type="hidden" ng-model="slotId">
+            <input class="time" type="text" ng-model="startTime"> -
+            <input class="time" type="text" ng-model="endTime">
+            <input id="" name="" type="submit" class="save-btn right" value="{{'Save'| trans}}" ng-click="saveSlot(slotId,startTime,endTime)">
+            <br>
+            <span class="cancel-text">{{'Cancel book'|trans}}</span>
+            <input id="" name="" type="submit" ng-click="cancelBook(slotId)" class="cancel-book-btn toHide right" value="{{'Confirm cancel'| trans}}" ng-click="cancelBook(slotId)">
+            <br>
+            <span class="delete-text">{{'Delete slot'|trans}}</span>
+            <input id="" name="" type="submit" ng-click="deleteSlot(slotId)" class="delete-btn toHide right" value="{{'Confirm delete'| trans}}">
+
+          </form>
+          <button name="book-cancel" class="edit-cancel left" >{{'Cancel'| trans}}</button>
+        </div>
+      </div>
+
+
+    </div> {# end of cntr #}
+  </dir>
+
+</div>
 
 

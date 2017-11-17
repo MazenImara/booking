@@ -1,0 +1,93 @@
+/* line 1, ../sass/booking-server.scss */
+.booking-server {
+  /* The Modal (background) */
+  /* Modal Content */
+}
+/* line 2, ../sass/booking-server.scss */
+.booking-server .booked {
+  background-color: #befcbe;
+}
+/* line 7, ../sass/booking-server.scss */
+.booking-server .time {
+  width: 50px !important;
+  display: inline !important;
+}
+/* line 15, ../sass/booking-server.scss */
+.booking-server .modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 10000;
+  /* Sit on top */
+  padding-top: 200px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+/* line 30, ../sass/booking-server.scss */
+.booking-server .modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 45%;
+}
+/* line 38, ../sass/booking-server.scss */
+.booking-server .right {
+  float: right;
+}
+/* line 42, ../sass/booking-server.scss */
+.booking-server .left {
+  float: left;
+}
+/* line 47, ../sass/booking-server.scss */
+.booking-server .edit-form .time {
+  width: 52px;
+  display: inline;
+}
+/* line 53, ../sass/booking-server.scss */
+.booking-server .edit-time {
+  width: 18%;
+  height: 18%;
+}
+/* line 60, ../sass/booking-server.scss */
+.booking-server .edit-time-span {
+  margin-left: 20px;
+}
+/* line 64, ../sass/booking-server.scss */
+.booking-server .delete-text, .booking-server .cancel-text {
+  color: red;
+  text-decoration: underline;
+}
+/* line 68, ../sass/booking-server.scss */
+.booking-server .delete-text:hover, .booking-server .cancel-text:hover {
+  color: green;
+  text-decoration: none;
+}
+/* line 74, ../sass/booking-server.scss */
+.booking-server .delete-btn {
+  margin-left: 40px;
+  display: none;
+}
+/* line 78, ../sass/booking-server.scss */
+.booking-server .cancel-book-btn {
+  margin-left: 40px;
+  display: none;
+}
+/* line 83, ../sass/booking-server.scss */
+.booking-server .edit-cancel {
+  margin-top: 24px;
+}
+
+/* end of main div*/
