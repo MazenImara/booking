@@ -73,8 +73,9 @@ class bookingController extends ControllerBase {
       ],
       '#theme'      => 'server',
       '#content'    => [
-        'server' => functions::getserver($id),
-        //'data' => functions::getDataServer($id),
+        'server' => functions::getServiceServers($id),
+        'addServerDayForm' => \Drupal::formBuilder()
+          ->getForm('Drupal\booking\Form\addServerDayForm',$id),
       ],
     ];
   }

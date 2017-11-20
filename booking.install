@@ -198,6 +198,10 @@ function booking_schema() {
           'not null' => TRUE,
           'default' => 1,
         ],
+        'serviceId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
       ],
       'primary key' => ['id'],
     ];
@@ -214,27 +218,6 @@ function booking_schema() {
         'title' => [
           'type' => 'varchar',
           'length' => 255,
-          'not null' => TRUE,
-        ],
-      ],
-      'primary key' => ['id'],
-    ];
-  }
-
-  if (!db_table_exists('booking_service_server')) {
-    $schema['booking_service_server'] = [
-      'fields' => [
-        'id' => [
-          'type' => 'serial',
-          'unsigned' => TRUE,
-          'not null' => TRUE
-        ],
-        'serviceId' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
-        'serverId' => [
-          'type' => 'int',
           'not null' => TRUE,
         ],
       ],

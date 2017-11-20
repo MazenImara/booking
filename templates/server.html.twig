@@ -2,7 +2,7 @@
 
 
   {{content.server.name}}<br>
-  {{content.data[0].year}}
+  {{content.addServerDayForm}}
 
   <dir ng-app='bookingServer'>
     <div id="bookingServerCtrl" ng-controller="bookingServerCtrl">
@@ -32,6 +32,9 @@
           <td>{[{item.status}]}</td>
           <td>{[{item.book.client.name}]}</td>
           <td></td>
+        </tr>
+        <tr>
+          <td><input type="text" size="4" ng-model="slotStartTime">-<input type="text" size="4" ng-model="slotEndTime"></td>
         </tr>
       </table>
       <hr>

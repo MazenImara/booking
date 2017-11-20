@@ -3,17 +3,15 @@
     attach: function (context, settings) {
       $('body', context).once('server').each(function () {
 //start
-      var selectedDay = new Date();
-      $(function() {
+        var selectedDay = new Date();
+        $(function() {
           $('#popupDatepicker').datepick({onSelect: showDate});
-          //$('#inlineDatepicker').datepick({onSelect: showDate});
+          $('#startDateDatepicker').datepick();
         });
         function showDate(date) {
           selectedDay = date;
           angular.element($('#bookingServerCtrl')).scope().dayData(formatDate(date));
         }
-
-
 
 
 

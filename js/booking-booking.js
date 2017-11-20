@@ -69,7 +69,7 @@
             $http.post('/bookingAjax/clientBook', {client: client}).then(function (response) {
               $scope.clientBooks = response.data;
             }, function (response) {
-                      // this function handles error
+              // this function handles error
             });
           }
 

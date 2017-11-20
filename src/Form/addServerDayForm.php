@@ -7,6 +7,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use \Drupal\booking\Functions\functions;
 
 /**
  * Configure statistics settings for this site.
@@ -55,27 +56,46 @@ class addServerDayForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['booking.settings.server'];
+    return ['booking.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $serverId=NULL) {
-    $config = $this->config('booking.settings.server');
-
+    $config = $this->config('booking.settings');
     $form['serverId'] = [
-      '#type' => 'textfield',
+      '#type' => 'hidden',
       '#title' => t('serverId'),
       '#default_value' => $serverId,
       '#required' => "True",
+    ];
+
+    $form['quantity'] = [
+      '#type' => 'textfield',
+      '#title' => t('Quantity'),
+      '#placeholder' => t('quantity'),
+      '#default_value' => 1,
+      '#description' => t('How many days to add.'),
+      '#size' => 4,
+      '#required' => "True",
+    ];
+
+    $form['startDate'] = [
+      '#type' => 'textfield',
+      '#title' => t('Start date'),
+      '#placeholder' => t('Start date'),
+      '#description' => t('Pick date to start from.'),
+      '#size' => 10,
+      '#required' => "True",
+      '#id' => 'startDateDatepicker',
     ];
 
     $form['alowedBookNum'] = [
       '#type' => 'textfield',
       '#title' => t('Book number'),
       '#placeholder' => '1',
-      '#default_value' => $config->get('alowedBookNum'),
+      '#default_value' => $config->get($serverId)['alowedBookNum'],
       '#description' => t('Alowed number of booking for each client.'),
       '#size' => 4,
       '#required' => "True",
@@ -85,7 +105,7 @@ class addServerDayForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Period'),
       '#placeholder' => '60',
-      '#default_value' => $config->get('period'),
+      '#default_value' => $config->get($serverId)['period'],
       '#description' => t('Period for each slot in minutes ex: 60 min.'),
       '#size' => 4,
       '#required' => "True",
@@ -95,7 +115,7 @@ class addServerDayForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Day start time'),
       '#placeholder' => '8:00',
-      '#default_value' => $config->get('dayStart'),
+      '#default_value' => $config->get($serverId)['dayStart'],
       '#description' => t('Time for starting working day ex 8:00.'),
       '#size' => 4,
       '#date_date_element' => 'none',
@@ -107,7 +127,7 @@ class addServerDayForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Day end time'),
       '#placeholder' => '17:00',
-      '#default_value' => $config->get('dayEnd'),
+      '#default_value' => $config->get($serverId)['dayEnd'],
       '#description' => t('Time for end of working day ex 17:00.'),
       '#size' => 4,
       '#date_date_element' => 'none',
@@ -125,14 +145,13 @@ class addServerDayForm extends ConfigFormBase {
     $options["7"] = t('Sunday');
 
 
-    $form['daysOff'] = array(
+    $form['daysOff'] = [
       '#title' => t(''),
       '#type' => 'checkboxes',
       '#description' => t(''),
       '#options' => $options,
-      '#default_value' => ['6', '7'],
-      '#required' => "True",
-    );
+      '#default_value' => $config->get($serverId)['daysOff'],
+    ];
 
     return parent::buildForm($form, $form_state);
   }
@@ -141,13 +160,21 @@ class addServerDayForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('booking.settings.server')
-      ->set('alowedBookNum', $form_state->getValue('alowedBookNum'))
-      ->set('period', $form_state->getValue('period'))
-      ->set('dayEnd', $form_state->getValue('dayEnd'))
-      ->set('dayStart', $form_state->getValue('dayStart'))
-      ->set('daysOff', $form_state->getValue('daysOff'))
+    $this->config('booking.settings')
+      ->set($form_state->getValue('serverId'),
+        [
+          'alowedBookNum' => $form_state->getValue('alowedBookNum'),
+          'period' => $form_state->getValue('period'),
+          'dayStart' => $form_state->getValue('dayStart'),
+          'dayEnd' => $form_state->getValue('dayEnd'),
+          'daysOff' => $form_state->getValue('daysOff'),
+        ]
+      )
       ->save();
+
+      $startDate = strtotime(date($form_state->getValues()['startDate']));
+
+      functions::addServerDay($form_state->getValues()['serverId'], $form_state->getValues()['quantity'], $startDate);
 
 
 

@@ -123,8 +123,7 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'checkboxes',
       '#description' => t(''),
       '#options' => $options,
-      '#default_value' => ['6', '7'],
-      '#required' => "True",
+      '#default_value' => $config->get('daysOff'),
     );
 
     return parent::buildForm($form, $form_state);
