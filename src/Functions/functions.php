@@ -130,10 +130,10 @@ class functions {
 
   static public function addDay($newDayTime, $config, $serviceId)
   {
-    if($config['daysOff'][date('N', $newDayTime)] == '0')
-      $status = 1;
-    else
+    if($config['daysOff'] != NULL and $config['daysOff'][date('N', $newDayTime)] != '0')
       $status = 0;
+    else
+      $status = 1;
     $day = date('d', $newDayTime);
     \Drupal::database()->insert('booking_day')
       ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp'])
@@ -162,16 +162,15 @@ class functions {
   static public function addSlot($slot) {
     $day = self::getDayById($slot['dayId']);
     if ($day == Null) {
-      \Drupal::database()->insert('booking_day')
-        ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp'])
-        ->values([$day, $status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime])
-        ->execute();
+      $dayTime = strtotime($slot['dayDate']);
+      self::addDay($dayTime, self::config($slot['serverId']),$slot['serviceId']);
+      $day = self::getDayById(self::getLastId('booking_day'));
     }
     $startTime =$day['timeStamp'] + self::timeToStamp($slot['startTime']);
     $endTime = $day['timeStamp'] + self::timeToStamp($slot['endTime']);
     \Drupal::database()->insert('booking_slot')
       ->fields(['period', 'dayId', 'status', 'serverId', 'startTime', 'endTime'])
-      ->values(['60', $slot['dayId'], 1, $slot['serverId'], $startTime, $endTime])
+      ->values(['60', $day['id'], 1, $slot['serverId'], $startTime, $endTime])
       ->execute();
     return date('Y-m-d H:i', $endTime);
   }

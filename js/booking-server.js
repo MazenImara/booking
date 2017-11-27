@@ -3,6 +3,7 @@
     attach: function (context, settings) {
       $('body', context).once('server').each(function () {
 //start
+
         var selectedDay = new Date();
         $(function() {
           $('#popupDatepicker').datepick({onSelect: showDate});
@@ -113,7 +114,14 @@
 
           $scope.addSlot = function (startTime, endTime) {
             if (isTime(startTime) && isTime(endTime)) {
-              $http.post('/bookingAjax/addSlot', {dayId: $scope.content.id, serverId: serverId, startTime: startTime, endTime: endTime}).then(function (response) {
+              $http.post('/bookingAjax/addSlot', {
+                dayId: $scope.content.id,
+                serverId: serverId,
+                startTime: startTime,
+                endTime: endTime,
+                serviceId : drupalSettings.booking.content.serviceId,
+                dayDate: formatDate(selectedDay),
+              }).then(function (response) {
 
                 $scope.dayData(formatDate(selectedDay));
 

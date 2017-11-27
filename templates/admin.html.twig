@@ -1,6 +1,8 @@
-{{content.addServiceForm}} <br>
 
-{% for item in content.services %}
-    <a href="/booking/service/{{item.id}}">{{item.title}}</a><br>
-{% endfor %}
 
+<ul>
+  {% for item in content.services %}
+    <li><a href="/booking/service/{{item.id}}">{{item.title}}</a></li><br>
+  {% endfor %}
+</ul><br>
+{{content.addServiceForm}}

@@ -15,7 +15,6 @@ class bookingController extends ControllerBase {
    */
   public function booking($serviceId) {
     //functions::deleteSlots();
-    $a = 1;
     return [
       '#attached' => [
         'library' => [
@@ -95,15 +94,38 @@ class bookingController extends ControllerBase {
           'booking' => [
             'content' => [
               'serverId' => $id,
-              'serviceId'=> functions::getServer($id)['serviceId'];
+              'serviceId'=> functions::getServer($id)['serviceId'],
             ],
           ]
         ]
       ],
       '#theme'      => 'server',
       '#content'    => [
+        'server' => functions::getServer($id),
         'addServerDayForm' => \Drupal::formBuilder()
           ->getForm('Drupal\booking\Form\addServerDayForm',$id),
+      ],
+    ];
+  }
+
+  public function client($id) {
+    return [
+      '#attached' => [
+        'library' => [
+          'booking/booking_server',
+        ],
+        'drupalSettings' => [
+          'booking' => [
+            'content' => [
+              'serverId' => '$id',
+              'serviceId'=> '',
+            ],
+          ]
+        ]
+      ],
+      '#theme'      => 'client',
+      '#content'    => [
+        'client' => functions::getClient($id),
       ],
     ];
   }

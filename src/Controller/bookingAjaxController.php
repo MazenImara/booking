@@ -100,6 +100,8 @@ class bookingAjaxController extends ControllerBase {
       'startTime' => $request->startTime,
       'endTime' => $request->endTime,
       'serverId' => $request->serverId,
+      'serviceId' => $request->serviceId,
+      'dayDate' => $request->dayDate,
     ];
     //return new JsonResponse($slotId);
     return new JsonResponse(functions::addSlot($slot));

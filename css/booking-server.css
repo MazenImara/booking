@@ -100,3 +100,6 @@
 }
 
 /* end of main div*/
+#bookingServerCtrl{
+  min-height: 500px;
+}

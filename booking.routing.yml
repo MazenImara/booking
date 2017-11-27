@@ -159,6 +159,14 @@ booking.server:
   requirements:
     _permission: 'manage booking'
 
+booking.client:
+  path: '/booking/client/{id}'
+  defaults:
+    _controller: '\Drupal\booking\Controller\bookingController::client'
+    _title: ''
+  requirements:
+    _permission: 'manage booking'
+
 # Forms
 
 booking.settings:
