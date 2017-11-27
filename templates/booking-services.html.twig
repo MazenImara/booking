@@ -1,0 +1,11 @@
+<div class="booking-module">
+  <ul>
+    {% for service in content.services %}
+        <li><a href="/booking/{{service.id}}">{{service.title}}</a></li>
+    {% endfor %}
+  </ul>
+
+
+</div>
+
+

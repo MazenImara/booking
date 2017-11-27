@@ -19,12 +19,14 @@ class bookingAjaxController extends ControllerBase {
     $data = [
       'date' => $_POST['date'],
       'client' => $client,
+      'serviceId' => $_POST['serviceId'],
     ];
     if ($data['date'] == NULL && $data['client'] == NULL) {
       $request = json_decode(file_get_contents("php://input"));
       $data = [
         'date' => $request->date,
         'client' => json_decode(json_encode($request->client), True),
+        'serviceId' => $request->serviceId,
       ];
     }
     //print_r($data);
@@ -91,6 +93,18 @@ class bookingAjaxController extends ControllerBase {
     return new JsonResponse(functions::deleteSlot($slotId));
   }
 
+  public function addSlot() {
+    $request = json_decode(file_get_contents("php://input"));
+    $slot = [
+      'dayId' => $request->dayId,
+      'startTime' => $request->startTime,
+      'endTime' => $request->endTime,
+      'serverId' => $request->serverId,
+    ];
+    //return new JsonResponse($slotId);
+    return new JsonResponse(functions::addSlot($slot));
+  }
+
 
   public function adminCancelBook() {
     $request = json_decode(file_get_contents("php://input"));
@@ -154,6 +168,12 @@ class bookingAjaxController extends ControllerBase {
     //print_r($data);
     //return new JsonResponse($client);
     return new JsonResponse(functions::getClientBook($client));
+  }
+
+  public function getServices() {
+    $response['services'] = functions::getServices();
+    $response['status'] = 'ok';
+    return new JsonResponse($response);
   }
 
 }// end of class

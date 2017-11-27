@@ -1,4 +1,4 @@
-# ajax
+ # ajax
 
 booking.book:
   path: '/booking/book'
@@ -91,7 +91,7 @@ booking.getServerDay:
     _permission: 'access content'
 
 booking.deleteSlot:
-  path: '/booking/deleteSlot'
+  path: '/bookingAjax/deleteSlot'
   defaults:
     _title: ''
     _controller: '\Drupal\booking\Controller\bookingAjaxController::deleteSlot'
@@ -99,12 +99,38 @@ booking.deleteSlot:
   requirements:
     _permission: 'access content'
 
+booking.addSlot:
+  path: '/bookingAjax/addSlot'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::addSlot'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
+booking.getServices:
+  path: '/bookingAjax/getServices'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingAjaxController::getServices'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
 
 # Pages
 booking.booking:
-  path: '/booking'
+  path: '/booking/{serviceId}'
   defaults:
     _controller: '\Drupal\booking\Controller\bookingController::booking'
+    _title: ''
+  requirements:
+    _permission: 'access content'
+
+booking.bookingServices:
+  path: '/booking'
+  defaults:
+    _controller: '\Drupal\booking\Controller\bookingController::bookingServices'
     _title: ''
   requirements:
     _permission: 'access content'

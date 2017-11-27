@@ -34,7 +34,13 @@
           <td></td>
         </tr>
         <tr>
-          <td><input type="text" size="4" ng-model="slotStartTime">-<input type="text" size="4" ng-model="slotEndTime"></td>
+          <td class="add-slot">
+            <form>
+              <input maxlength="5" type="text"ng-model="slotStartTime" required>-
+              <input maxlength="5" type="text" ng-model="slotEndTime" required>
+            </form>
+            <span class="edit-time-span" ng-click="addSlot(slotStartTime, slotEndTime)">{{'Add'|trans}}</span>
+          </td>
         </tr>
       </table>
       <hr>

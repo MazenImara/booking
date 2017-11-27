@@ -89,5 +89,14 @@
 .booking-server .edit-cancel {
   margin-top: 24px;
 }
+/* line 88, ../sass/booking-server.scss */
+.booking-server .add-slot input {
+  display: inline;
+  width: 47px;
+}
+/* line 92, ../sass/booking-server.scss */
+.booking-server .add-slot form {
+  display: inline;
+}
 
 /* end of main div*/

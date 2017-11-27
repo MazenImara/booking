@@ -10,6 +10,11 @@ function booking_theme($existing, $type, $theme, $path) {
         'content' => 'from hook module',
       ],
     ],
+    'booking_services' => [
+      'variables' => [
+        'content' => 'from hook module',
+      ],
+    ],
     'admin' => [
       'variables' => [
         'content' => 'from hook module',

@@ -1,8 +1,6 @@
 <div class="booking-module">
 
 
-  {{dump(content)}}
-
 
 
   <button id="reload" >reload</button>
@@ -48,7 +46,7 @@
       </tr>
       <tr ng-repeat="slot in content.slots | orderBy: 'startTimeStamp'">
         <td>{[{slot.start}]} - {[{slot.end}]}</td>
-        <td>{[{slot.server.name}]}{[{slot.status}]}</td>
+        <td>{[{slot.server.name}]}</td>
         <td ng-if="slot.status == 1">
           <button class="book-slot" id="{[{slot.id}]}" ng-click="book(slot.id)">
             <input type="hidden" value="{&quot;slotId&quot;:{[{slot.id}]},&quot;serviceId&quot;:1}">

@@ -3,6 +3,7 @@
     attach: function (context, settings) {
       $('body', context).once('booking').each(function () {
 //start
+        var serviceId = drupalSettings.booking.content.serviceId;
         $(function() {
           $('#popupDatepicker').datepick({onSelect: showDate});
           //$('#inlineDatepicker').datepick({onSelect: showDate});
@@ -28,7 +29,7 @@
 
 
           $scope.dayData = function (date, client) {
-            $http.post('/bookingAjax/getDay', {date: date, client: client}).then(function (response) {
+            $http.post('/bookingAjax/getDay', {date: date, client: client, serviceId: serviceId}).then(function (response) {
               $scope.content = response.data;
             }, function (response) {
                       // this function handles error
@@ -67,7 +68,8 @@
 
           $scope.clientBook = function (client) {
             $http.post('/bookingAjax/clientBook', {client: client}).then(function (response) {
-              $scope.clientBooks = response.data;
+              console.log(response.data);
+              $scope.clientBooks = response.data.books;
             }, function (response) {
               // this function handles error
             });

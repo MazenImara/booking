@@ -77,7 +77,7 @@
           }
 
           $scope.deleteSlot = function (slotId) {
-            $http.post('/booking/deleteSlot', {slotId: slotId}).then(function (response) {
+            $http.post('/bookingAjax/deleteSlot', {slotId: slotId}).then(function (response) {
               $('#server-edit-slot').hide();
               $scope.dayData(formatDate(selectedDay));
               $('.delete-btn').hide();
@@ -97,13 +97,33 @@
           }
 
           $scope.saveSlot = function (slotId, startTime, endTime) {
-            $http.post('/bookingAjax/editSlotTime', {slotId: slotId, startTime: startTime, endTime: endTime}).then(function (response) {
-              $('#server-edit-slot').hide();
-              $scope.dayData(formatDate(selectedDay));
-              $('.toHide').hide();
-            }, function (response) {
-                      // this function handles error
-            });
+            if (isTime(startTime) && isTime(endTime)){
+              $http.post('/bookingAjax/editSlotTime', {slotId: slotId, startTime: startTime, endTime: endTime}).then(function (response) {
+                $('#server-edit-slot').hide();
+                $scope.dayData(formatDate(selectedDay));
+                $('.toHide').hide();
+              }, function (response) {
+                        // this function handles error
+              });
+            }
+            else{
+              //alert('invalid time');
+            }
+          }
+
+          $scope.addSlot = function (startTime, endTime) {
+            if (isTime(startTime) && isTime(endTime)) {
+              $http.post('/bookingAjax/addSlot', {dayId: $scope.content.id, serverId: serverId, startTime: startTime, endTime: endTime}).then(function (response) {
+
+                $scope.dayData(formatDate(selectedDay));
+
+              }, function (response) {
+                        // this function handles error
+              });
+            }
+            else{
+              alert('invalid time');
+            }
           }
 
 
@@ -113,6 +133,35 @@
 
         });// end of ctrl
 
+        function isTime(input) {
+          boolean = false;
+          if (input != null) {
+            if (input.indexOf(":") >= 0){
+              inputArr = input.split(':');
+              if (!inputArr[0].match(/[^0-9]/g) && !inputArr[1].match(/[^0-9]/g)) {
+                if(inputArr[0] < 24 && inputArr[0] != ''){
+                  if (inputArr[1] < 60 && inputArr[1] != '') {
+                    boolean = true;
+                  }
+                  else{
+                    alert('Minutes should be between 0 - 59')
+                  }
+                }
+                else{
+                  alert('Hours should be between 0 - 23')
+                }
+              }
+              else{
+                alert('only numbers')
+              }
+
+            }
+            else{
+              alert('Input should be ex 17:50');
+            }
+          }
+          return boolean
+        }
         function formatDate(strDate) {
           d = new Date(strDate);
           day = d.getDate();

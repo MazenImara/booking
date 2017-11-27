@@ -103,12 +103,12 @@ class functions {
       if (!$day) {
         self::addDay($startDate, $config, $server['serviceId']);
         $dayId = self::getLastId('booking_day');
-        self::addSlots($config, $serverId, $dayId);
+        self::addSlots($config, $serverId, $dayId, $startDate);
         drupal_set_message($dayId.' no');
       }
       else{
         if (!self::getSlots($day['id'])) {
-          self::addSlots($config, $serverId, $day['id']);
+          self::addSlots($config, $serverId, $day['id'], $day['timeStamp']);
         }
         else{
           drupal_set_message(t('This day already have slots, you can delete them all and try again or add one by one'));
@@ -124,7 +124,7 @@ class functions {
     self::addDay($newDayTime, $conf, $settings['serviceId']);
     $dayId = self::getLastId('booking_day');
     foreach (self::getServiceServers($settings['serviceId']) as $server) {
-      self::addSlots($conf, $server['id'], $dayId);
+      self::addSlots($conf, $server['id'], $dayId, $newDayTime);
     }
   }
 
@@ -141,11 +141,11 @@ class functions {
       ->execute();
   }
 
-  static public function addSlots($conf, $serverId, $dayId) {
+  static public function addSlots($conf, $serverId, $dayId, $dayTimeStamp) {
     $period = $conf['period'];
     $slotQuantity = ($conf['dayEnd']['h'] - $conf['dayStart']['h']) / ($period/60);
     $diffMin = $conf['dayEnd']['m'] - $conf['dayStart']['m'];
-    $startTime = strtotime(date("Y/m/d",$newDayTime)) + ($conf['dayStart']['h']*60*60) + ($conf['dayStart']['m']*60);
+    $startTime = $dayTimeStamp + ($conf['dayStart']['h']*60*60) + ($conf['dayStart']['m']*60);
     for ($i=0; $i < $slotQuantity; $i++) {
       if (($i + 1)==$slotQuantity)
         $period = $period + $diffMin;
@@ -157,10 +157,30 @@ class functions {
       ->values([$slot['period'], $slot['dayId'], $slot['status'], $slot['serverId'], $slot['startTime'], $slot['endTime']])
       ->execute();
     }
-
-
-
   }
+
+  static public function addSlot($slot) {
+    $day = self::getDayById($slot['dayId']);
+    if ($day == Null) {
+      \Drupal::database()->insert('booking_day')
+        ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp'])
+        ->values([$day, $status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime])
+        ->execute();
+    }
+    $startTime =$day['timeStamp'] + self::timeToStamp($slot['startTime']);
+    $endTime = $day['timeStamp'] + self::timeToStamp($slot['endTime']);
+    \Drupal::database()->insert('booking_slot')
+      ->fields(['period', 'dayId', 'status', 'serverId', 'startTime', 'endTime'])
+      ->values(['60', $slot['dayId'], 1, $slot['serverId'], $startTime, $endTime])
+      ->execute();
+    return date('Y-m-d H:i', $endTime);
+  }
+  static public function timeToStamp($time) {
+    $h = explode(':', $time)[0];
+    $m = explode(':', $time)[1];
+    return ($h * 60 * 60) + ($m * 60);
+  }
+
   static public function deleteSlots()
   {
     $query = \Drupal::database()->delete('booking_slot', [])->execute();
@@ -259,7 +279,7 @@ class functions {
     $day = NULL;
     $result = \Drupal::database()->select('booking_day', 'q')
       ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
-      ->orderBy('id', 'DESC')
+      ->orderBy('timeStamp', 'DESC')
       ->range(0,1)
       ->execute();
       while ($row = $result->fetchAssoc()) {
@@ -292,6 +312,25 @@ class functions {
       }
     return $day;
   }
+
+  static public function getDayById($dayId) {
+    $day = NULL;
+    $result = \Drupal::database()->select('booking_day', 'q')
+      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
+      ->condition('id', $dayId)
+      ->execute();
+      while ($row = $result->fetchAssoc()) {
+        $day = [
+          'id' => $row['id'],
+          'day' => $row['day'],
+          'status' => $row['status'],
+          'serviceId' => $row['serviceId'],
+          'timeStamp' => $row['timeStamp'],
+        ];
+      }
+    return $day;
+  }
+
   static public function getSlots($dayId)
   {
     $slots = [];
@@ -380,6 +419,7 @@ class functions {
             'dayId' => $row['dayId'],
             'status' => $row['status'],
             'startTimeStamp' => $row['startTime'],
+            'endTimeStamp' => $row['endTime'],
             'startTime' => date("H:i",$row['startTime']),
             'endTime' => date("H:i",$row['endTime']),
             'server' => self::getServer($row['serverId']),
@@ -571,6 +611,7 @@ class functions {
     $result = \Drupal::database()->select('booking_day', 'q')
       ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
+      ->condition('serviceId', $data['serviceId'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
       $day = [
@@ -618,11 +659,11 @@ class functions {
         'serviceId' => $row['serviceId'],
         'clientId' => $row['clientId'],
       ];
-      if ( (float)$book['slot']['startTimeStamp'] >=  (float)strtotime(date('d-m-Y', REQUEST_TIME))) {
+      if ((float)$book['slot']['startTimeStamp'] >=  (float)strtotime(date('d-m-Y', REQUEST_TIME))) {
         array_push($books,$book);
       }
     }
-    return $books;
+    return ['books' => $books , 'status' => 'ok'];
   }
 
   static public function deleteSlot($slotId) {
