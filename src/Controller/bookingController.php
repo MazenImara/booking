@@ -130,4 +130,32 @@ class bookingController extends ControllerBase {
     ];
   }
 
+  public function setting() {
+    $fields = functions::getExtraFields();
+    return [
+      '#attached' => [
+        'library' => [
+          'booking/booking_server',
+        ],
+        'drupalSettings' => [
+          'booking' => [
+            'content' => [
+              'serverId' => '$id',
+              'serviceId'=> '',
+            ],
+          ]
+        ]
+      ],
+      '#theme'      => 'setting',
+      '#content'    => [
+        'serverFields' => $fields['serverFields'],
+        'clientFields' => $fields['clientFields'],
+        'addExtraFieldForm' => \Drupal::formBuilder()
+          ->getForm('Drupal\booking\Form\addExtraFieldForm'),
+        'settingsForm' => \Drupal::formBuilder()
+          ->getForm('Drupal\booking\Form\SettingsForm'),
+      ],
+    ];
+  }
+
 }// end of class

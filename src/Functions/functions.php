@@ -99,9 +99,9 @@ class functions {
     $server = self::getServer($serverId);
     for ($i=0; $i < $daysQuantity; $i++) {
       $startDate = strtotime(date('Y-m-d',$startDate)) ;
-      $day = self::getDay($server['serviceId'], $startDate);
+      $day = self::getDay($server['id'], $startDate);
       if (!$day) {
-        self::addDay($startDate, $config, $server['serviceId']);
+        self::addDay($startDate, $config, $server['serviceId'], $serverId);
         $dayId = self::getLastId('booking_day');
         self::addSlots($config, $serverId, $dayId, $startDate);
         drupal_set_message($dayId.' no');
@@ -121,14 +121,14 @@ class functions {
   static public function addServiceDays($newDayTime, $settings) {
     $day = date("d", $newDayTime);
     $conf = self::config();
-    self::addDay($newDayTime, $conf, $settings['serviceId']);
-    $dayId = self::getLastId('booking_day');
     foreach (self::getServiceServers($settings['serviceId']) as $server) {
+      self::addDay($newDayTime, $conf, $settings['serviceId'], $server['id']);
+      $dayId = self::getLastId('booking_day');
       self::addSlots($conf, $server['id'], $dayId, $newDayTime);
     }
   }
 
-  static public function addDay($newDayTime, $config, $serviceId)
+  static public function addDay($newDayTime, $config, $serviceId, $serverId)
   {
     if($config['daysOff'] != NULL and $config['daysOff'][date('N', $newDayTime)] != '0')
       $status = 0;
@@ -136,8 +136,8 @@ class functions {
       $status = 1;
     $day = date('d', $newDayTime);
     \Drupal::database()->insert('booking_day')
-      ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp'])
-      ->values([$day, $status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime])
+      ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp', 'serverId'])
+      ->values([$day, $status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime, $serverId])
       ->execute();
   }
 
@@ -163,7 +163,7 @@ class functions {
     $day = self::getDayById($slot['dayId']);
     if ($day == Null) {
       $dayTime = strtotime($slot['dayDate']);
-      self::addDay($dayTime, self::config($slot['serverId']),$slot['serviceId']);
+      self::addDay($dayTime, self::config($slot['serverId']),$slot['serviceId'], $slot['serverId']);
       $day = self::getDayById(self::getLastId('booking_day'));
     }
     $startTime =$day['timeStamp'] + self::timeToStamp($slot['startTime']);
@@ -293,11 +293,11 @@ class functions {
     return $day;
   }
 
-  static public function getDay($serviceId, $timeStamp) {
+  static public function getDay($serverId, $timeStamp) {
     $day = NULL;
     $result = \Drupal::database()->select('booking_day', 'q')
       ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
-      ->condition('serviceId', $serviceId)
+      ->condition('serverId', $serverId)
       ->condition('timeStamp', $timeStamp)
       ->execute();
       while ($row = $result->fetchAssoc()) {
@@ -521,8 +521,17 @@ class functions {
     return $client;
   }
 
+  static public function getExtraFields() {
+    $fields = [];
+    $conf = \Drupal::config('booking.settings');
+    $fields = [
+      'serverFields' => $conf->get('serverFields'),
+      'clientFields' => $conf->get('clientFields'),
+    ];
+    return $fields;
+  }
 
-
+// get functions
   // ajax
 
 
@@ -589,6 +598,7 @@ class functions {
     $result = \Drupal::database()->select('booking_day', 'q')
       ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
+      ->condition('serverId', $data['serverId'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
       $day = [
@@ -606,14 +616,15 @@ class functions {
   }
 
   static public function getDayDate($data) {
-    $day = null;
+    $allSlots =[];
+    $days = [];
     $result = \Drupal::database()->select('booking_day', 'q')
       ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
       ->condition('serviceId', $data['serviceId'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
-      $day = [
+      array_push($days ,[
         'id' => $row['id'],
         'day' => $row['day'],
         'serviceId' => $row['serviceId'],
@@ -621,28 +632,28 @@ class functions {
         'timeStamp' => $row['timeStamp'],
         'date' => $row['date'],
         'slots' => [],
-      ];
+      ]);
     }
-    if ($day['status'] != '0' and (float)strtotime($data['date']) >=  (float)strtotime(date('d-m-Y', REQUEST_TIME))){
-      $slots = self::getSlots($day['id']);
-      foreach ($slots as $slot) {
-        $slot['start'] =  date("H:i",$slot['startTime']);
-        $slot['end'] = date("H:i",$slot['endTime']);
-        $slot['startTimeStamp'] = $slot['startTime'];
-        if ($slot['status'] == 1) {
-          array_push($day['slots'], $slot);
-        }
-        else{
-          if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
-            array_push($day['slots'], $slot);
+    foreach ($days as $day) {
+      if ($day['status'] != '0' and (float)strtotime($data['date']) >=  (float)strtotime(date('d-m-Y', REQUEST_TIME))){
+        $slots = self::getSlots($day['id']);
+        foreach ($slots as $slot) {
+          $slot['start'] =  date("H:i",$slot['startTime']);
+          $slot['end'] = date("H:i",$slot['endTime']);
+          $slot['startTimeStamp'] = $slot['startTime'];
+          if ($slot['status'] == 1) {
+            array_push($allSlots, $slot);
+          }
+          else{
+            if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
+              array_push($allSlots, $slot);
+            }
           }
         }
+        $days[0]['slots'] = $allSlots;
       }
-      return $day;
     }
-    else{
-      return $day;
-    }
+    return $days[0];
   }
 
   static public function getClientBook($client) {

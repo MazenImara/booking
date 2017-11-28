@@ -167,6 +167,14 @@ booking.client:
   requirements:
     _permission: 'manage booking'
 
+booking.setting:
+  path: '/booking/setting'
+  defaults:
+    _controller: '\Drupal\booking\Controller\bookingController::setting'
+    _title: ''
+  requirements:
+    _permission: 'manage booking'
+
 # Forms
 
 booking.settings:
@@ -206,5 +214,13 @@ booking.addWorkDaysForm:
   defaults:
     _title: 'Add Work Days'
     _form: '\Drupal\booking\Form\addWorkDaysForm'
+  requirements:
+    _permission: 'manage booking'
+
+booking.addExtraField:
+  path: '/booking/addExtraFieldForm'
+  defaults:
+    _title: ''
+    _form: '\Drupal\booking\Form\addExtraFieldForm'
   requirements:
     _permission: 'manage booking'

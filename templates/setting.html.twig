@@ -1,0 +1,20 @@
+<h6>{{'Server extra fields'|trans}}</h6>
+<ul>
+  {% for field in content.serverFields %}
+    <li>{{field}}</li>
+  {% endfor %}
+</ul>
+
+<h6>{{'Client extra fields'|trans}}</h6>
+<ul>
+  {% for field in content.clientFields %}
+    <li>{{field}}</li>
+  {% endfor %}
+</ul>
+<h6>{{'Add extra field'|trans}}</h6>
+{{content.addExtraFieldForm}}
+
+<h6>{{'Time settings'|trans}}</h6>
+{{content.settingsForm}}
+
+
