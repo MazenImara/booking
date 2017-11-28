@@ -27,7 +27,9 @@ class bookingController extends ControllerBase {
         ]
       ],
       '#theme'      => 'booking',
-      '#content'    => 'functions::getWeeks(1)',
+      '#content'    => [
+        'clientExtraField' => functions::getExtraFields()['clientFields'],
+      ],
     ];
   }
   public function admin() {

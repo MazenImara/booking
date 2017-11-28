@@ -27,65 +27,66 @@
 }
 /* line 17, ../sass/booking-booking.scss */
 .booking-module .modal-content {
+  height: 500px;
   background-color: #fefefe;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
   width: 45%;
 }
-/* line 28, ../sass/booking-booking.scss */
+/* line 29, ../sass/booking-booking.scss */
 .booking-module .confirm {
   float: right;
 }
-/* line 32, ../sass/booking-booking.scss */
+/* line 33, ../sass/booking-booking.scss */
 .booking-module .book-slot {
   margin-right: 5px;
 }
-/* line 35, ../sass/booking-booking.scss */
+/* line 36, ../sass/booking-booking.scss */
 .booking-module .booking-calendar {
   height: 800px;
 }
-/* line 41, ../sass/booking-booking.scss */
+/* line 42, ../sass/booking-booking.scss */
 .booking-module .booking-signUp {
   float: right;
 }
-/* line 46, ../sass/booking-booking.scss */
+/* line 47, ../sass/booking-booking.scss */
 .booking-module .booking-signUp, .booking-module .booking-login {
   display: inline-block;
 }
-/* line 49, ../sass/booking-booking.scss */
+/* line 50, ../sass/booking-booking.scss */
 .booking-module .book-form {
   margin-top: 100px;
 }
-/* line 53, ../sass/booking-booking.scss */
+/* line 54, ../sass/booking-booking.scss */
 .booking-module .warning {
   color: red;
   display: none;
 }
-/* line 59, ../sass/booking-booking.scss */
+/* line 60, ../sass/booking-booking.scss */
 .booking-module #booking-logOut {
   float: right;
   text-decoration: underline;
 }
-/* line 63, ../sass/booking-booking.scss */
+/* line 64, ../sass/booking-booking.scss */
 .booking-module #booking-logOut:hover {
   color: red;
   text-decoration: none;
 }
-/* line 68, ../sass/booking-booking.scss */
+/* line 69, ../sass/booking-booking.scss */
 .booking-module .booking-windo-close {
   margin-top: 90px;
   display: none;
 }
-/* line 72, ../sass/booking-booking.scss */
+/* line 73, ../sass/booking-booking.scss */
 .booking-module .right {
   float: right;
 }
-/* line 76, ../sass/booking-booking.scss */
+/* line 77, ../sass/booking-booking.scss */
 .booking-module a {
   text-decoration: underline;
 }
-/* line 80, ../sass/booking-booking.scss */
+/* line 81, ../sass/booking-booking.scss */
 .booking-module .client-book {
   margin-bottom: 5%;
 }

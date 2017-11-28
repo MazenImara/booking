@@ -85,6 +85,12 @@
           <input type="text" name="phone" placeholder="{{'Phone'| trans}}" size="30" required>
           <input type="text" id="booking-signUp-email" class="booking-email" name="email" placeholder="{{'Email'| trans}}" size="30" required>
           <input type="text" name="password" placeholder="{{'Password'| trans}}" size="30" required>
+
+          {% for field in content.clientExtraField %}
+              <input type="text" name="{{field}}" placeholder="{{field}}" size="30" required>
+          {% endfor %}
+
+
           <input id="booking-signUp-submit" type="submit" class="" value="{{'Sign up'| trans}}">
         </form>
       </div>
