@@ -15,7 +15,6 @@
 
 /* Modal Content */
 .modal-content {
-    height: 500px;
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
@@ -40,15 +39,16 @@
 
 }
 .booking-signUp{
-    float: right;
-
 
 }
 .booking-signUp,.booking-login{
-    display: inline-block;
+    display: inline-flex;
+}
+.booking-signUp{
+    margin-left: 140px;
 }
 .book-form{
-    margin-top: 100px;
+
 }
 
 .warning{
