@@ -137,14 +137,19 @@ class bookingAjaxController extends ControllerBase {
  * ajax response
  */
   public function signUp() {
+    $clientExtraFields = functions::getExtraFields()['clientFields'];
     $client = [
       'name' => $_POST['name'],
       'phone' => $_POST['phone'],
       'email' => $_POST['email'],
       'password' => $_POST['password'],
     ];
+    foreach ($clientExtraFields as $field) {
+      $client[$field] = $_POST[$field];
+    }
 
     return new JsonResponse(functions::clientSignUp($client));
+    //return new JsonResponse($client);
   }
 
 /**

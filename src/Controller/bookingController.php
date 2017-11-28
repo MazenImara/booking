@@ -128,6 +128,7 @@ class bookingController extends ControllerBase {
       '#theme'      => 'client',
       '#content'    => [
         'client' => functions::getClient($id),
+        'extraFields' => functions::getExtraFiels('client', $id),
       ],
     ];
   }

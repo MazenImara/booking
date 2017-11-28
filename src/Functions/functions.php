@@ -531,6 +531,29 @@ class functions {
     return $fields;
   }
 
+  static public function getExtraFiels($objType, $objId)
+  {
+    $fields = [];
+    $result = \Drupal::database()->select('booking_extra_detail', 'q')
+      ->fields('q', ['id', 'objId', 'objType', 'title', 'value', 'type'])
+      ->condition('objType', $objType)
+      ->condition('objId', $objId)
+      ->execute();
+      while ($row = $result->fetchAssoc()) {
+        array_push($fields, [
+            'id' => $row['id'],
+            'objId' => $row['objId'],
+            'objType' => $row['objType'],
+            'title' => $row['title'],
+            'value' => $row['value'],
+            'type' => $row['type'],
+
+          ]);
+      }
+
+    return $fields;
+  }
+
 // get functions
   // ajax
 
@@ -567,13 +590,23 @@ class functions {
     if (self::isEmailExist($client['email'], 'booking_client') == NULL) {
       $id = self::addClient($client);
       $client['id'] = $id;
+      self::addClientExtraFields($client);
     }
     else{
       $client = NULL;
     }
     return $client;
   }
-
+  static public function addClientExtraFields($client)
+  {
+    $extraFields = self::getExtraFields()['clientFields'];
+    foreach ($extraFields as $field) {
+      \Drupal::database()->insert('booking_extra_detail')
+        ->fields(['objId', 'objType', 'title', 'value', 'type'])
+        ->values([$client['id'], 'client', $field, $client[$field], 'text'])
+        ->execute();
+    }
+  }
   static public function clientLogIn($log) {
     $client = NULL;
     $result = \Drupal::database()->select('booking_client', 'q')

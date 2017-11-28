@@ -1,3 +1,6 @@
 Name: {{content.client.name}}<br>
 Phone: {{content.client.phone}}<br>
 Email: {{content.client.email}}<br>
+{% for field in content.extraFields %}
+    {{field.title}}: {{field.value}}<br>
+{% endfor %}
