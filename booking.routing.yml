@@ -117,6 +117,15 @@ booking.getServices:
   requirements:
     _permission: 'access content'
 
+booking.deleteExtraField:
+  path: '/bookingController/deleteExtraField'
+  defaults:
+    _title: ''
+    _controller: '\Drupal\booking\Controller\bookingController::deleteExtraField'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
 
 # Pages
 booking.booking:

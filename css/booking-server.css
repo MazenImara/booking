@@ -99,7 +99,15 @@
   display: inline;
 }
 
-/* end of main div*/
-#bookingServerCtrl{
-  min-height: 500px;
+/* end of server*/
+/* line 103, ../sass/booking-server.scss */
+.booking-setting .del-field-form {
+  display: inline-block;
 }
+/* line 105, ../sass/booking-server.scss */
+.booking-setting .del-field-form button {
+  padding: 4px;
+  margin-right: 6px;
+}
+
+/* end of setting */

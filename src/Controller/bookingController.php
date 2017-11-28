@@ -161,4 +161,14 @@ class bookingController extends ControllerBase {
     ];
   }
 
+  public function deleteExtraField() {
+    $field = [
+      'title' => $_POST['title'],
+      'objType' => $_POST['objType'],
+    ];
+    functions::deleteExtraField($field);
+    $response = new RedirectResponse('/booking/setting');
+    $response->send();
+  }
+
 }// end of class

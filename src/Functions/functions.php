@@ -739,4 +739,18 @@ class functions {
       ->execute();
   }
 
+  static public function deleteExtraField($field)
+  {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->get('booking.settings');
+    $fields = $config->get($field['objType']);
+    foreach ($fields as $key => $value) {
+      if ($value == $field['title']) {
+        array_splice($fields, $key);
+      }
+    }
+    $config_factory->getEditable('booking.settings')->set($field['objType'], $fields)->save();
+  }
+
+
 } //end of class

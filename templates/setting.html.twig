@@ -1,20 +1,36 @@
-<h6>{{'Server extra fields'|trans}}</h6>
-<ul>
-  {% for field in content.serverFields %}
-    <li>{{field}}</li>
-  {% endfor %}
-</ul>
+<div class="booking-setting">
+  <h6>{{'Server extra fields'|trans}}</h6>
+  <ul>
+    {% for field in content.serverFields %}
+      <li>
+        <form method="post" action="/bookingController/deleteExtraField" class="del-field-form">
+          <input type="hidden" name="title" value="{{field}}">
+          <input type="hidden" name="objType" value="serverFields">
+          <button>x</button>
+        </form>
+        {{field}}
+      </li>
+    {% endfor %}
+  </ul>
 
-<h6>{{'Client extra fields'|trans}}</h6>
-<ul>
-  {% for field in content.clientFields %}
-    <li>{{field}}</li>
-  {% endfor %}
-</ul>
-<h6>{{'Add extra field'|trans}}</h6>
-{{content.addExtraFieldForm}}
+  <h6>{{'Client extra fields'|trans}}</h6>
+  <ul>
+    {% for field in content.clientFields %}
+      <li>
+        <form method="post" action="/bookingController/deleteExtraField" class="del-field-form">
+          <input type="hidden" name="title" value="{{field}}">
+          <input type="hidden" name="objType" value="clientFields">
+          <button>x</button>
+        </form>
+        {{field}}
+      </li>
+    {% endfor %}
+  </ul>
+  <h6>{{'Add extra field'|trans}}</h6>
+  {{content.addExtraFieldForm}}
+  <hr><br>
+  <h6>{{'Time settings'|trans}}</h6>
+  {{content.settingsForm}}
 
-<h6>{{'Time settings'|trans}}</h6>
-{{content.settingsForm}}
-
+</div>
 
