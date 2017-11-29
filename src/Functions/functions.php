@@ -134,10 +134,9 @@ class functions {
       $status = 0;
     else
       $status = 1;
-    $day = date('d', $newDayTime);
     \Drupal::database()->insert('booking_day')
-      ->fields(['day', 'status', 'serviceId', 'date', 'timeStamp', 'serverId'])
-      ->values([$day, $status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime, $serverId])
+      ->fields(['status', 'serviceId', 'date', 'timeStamp', 'serverId'])
+      ->values([$status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime, $serverId])
       ->execute();
   }
 
@@ -277,14 +276,13 @@ class functions {
   static public function getLastDay() {
     $day = NULL;
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
+      ->fields('q', ['id', 'status', 'serviceId', 'timeStamp'])
       ->orderBy('timeStamp', 'DESC')
       ->range(0,1)
       ->execute();
       while ($row = $result->fetchAssoc()) {
         $day = [
           'id' => $row['id'],
-          'day' => $row['day'],
           'status' => $row['status'],
           'serviceId' => $row['serviceId'],
           'timeStamp' => $row['timeStamp'],
@@ -296,14 +294,13 @@ class functions {
   static public function getDay($serverId, $timeStamp) {
     $day = NULL;
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
+      ->fields('q', ['id', 'status', 'serviceId', 'timeStamp'])
       ->condition('serverId', $serverId)
       ->condition('timeStamp', $timeStamp)
       ->execute();
       while ($row = $result->fetchAssoc()) {
         $day = [
           'id' => $row['id'],
-          'day' => $row['day'],
           'status' => $row['status'],
           'serviceId' => $row['serviceId'],
           'timeStamp' => $row['timeStamp'],
@@ -315,13 +312,12 @@ class functions {
   static public function getDayById($dayId) {
     $day = NULL;
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp'])
+      ->fields('q', ['id', 'status', 'serviceId', 'timeStamp'])
       ->condition('id', $dayId)
       ->execute();
       while ($row = $result->fetchAssoc()) {
         $day = [
           'id' => $row['id'],
-          'day' => $row['day'],
           'status' => $row['status'],
           'serviceId' => $row['serviceId'],
           'timeStamp' => $row['timeStamp'],
@@ -629,14 +625,13 @@ class functions {
   static public function getDayDataServer($data) {
     $day = null;
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp', "date"])
+      ->fields('q', ['id', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
       ->condition('serverId', $data['serverId'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
       $day = [
         'id' => $row['id'],
-        'day' => $row['day'],
         'serviceId' => $row['serviceId'],
         'status' => $row['status'],
         'timeStamp' => $row['timeStamp'],
@@ -652,14 +647,13 @@ class functions {
     $allSlots =[];
     $days = [];
     $result = \Drupal::database()->select('booking_day', 'q')
-      ->fields('q', ['id', 'day', 'status', 'serviceId', 'timeStamp', "date"])
+      ->fields('q', ['id', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
       ->condition('serviceId', $data['serviceId'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
       array_push($days ,[
         'id' => $row['id'],
-        'day' => $row['day'],
         'serviceId' => $row['serviceId'],
         'status' => $row['status'],
         'timeStamp' => $row['timeStamp'],
