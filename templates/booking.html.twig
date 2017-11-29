@@ -13,7 +13,8 @@
 
 
   <div id="bookingCtrl" ng-app="bookingClient" ng-controller="bookingCtrl">
-    <div class="client-book">
+
+    <div class="client-book" ng-if="clientBooks != ''">
       <table >
         <tr>
           <th>{{'Time'|trans}}</th>

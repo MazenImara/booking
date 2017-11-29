@@ -107,6 +107,10 @@ function booking_schema() {
           'type' => 'int',
           'not null' => TRUE,
         ],
+        'serverId' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
         'timeStamp' => [
           'type' => 'varchar',
           'length' => 255,
