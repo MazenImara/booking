@@ -90,12 +90,12 @@
   margin-top: 24px;
 }
 /* line 88, ../sass/booking-server.scss */
-.booking-server .add-slot input {
+.booking-server .add-slot-win input {
   display: inline;
   width: 47px;
 }
 /* line 92, ../sass/booking-server.scss */
-.booking-server .add-slot form {
+.booking-server .add-slot-win form {
   display: inline;
 }
 

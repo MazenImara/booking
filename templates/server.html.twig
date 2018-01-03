@@ -1,3 +1,6 @@
+{{content.user}}
+{{content.services[0].title}}
+
 <div class="booking-server">
 
 
@@ -26,25 +29,41 @@
           <th>{{'Status'|trans}}</th>
           <th>{{'Name'|trans}}</th>
         </tr>
-        <tr ng-repeat="item in content.slots | filter:date | orderBy: 'startTimeStamp'" >
-          <td class="hidden">{[{item.startTimeStamp}]}</td>
-          <td ><span class="{[{style(item.status)}]}">{[{item.startTime}]} - {[{item.endTime}]}</span><span class="edit-time-span" ng-click="editSlot(item.id, item.startTime, item.endTime)">{{'Edit'|trans}}</span></td>
-          <td>{[{item.status}]}</td>
-          <td><a href="/booking/client/{[{item.book.client.id}]}">{[{item.book.client.name}]}</a></td>
-          <td></td>
-        </tr>
+        <table ng-repeat="day in content">
+          <tr ng-repeat="item in day.slots | filter:date | orderBy: 'startTimeStamp'" >
+            <td class="hidden">{[{item.startTimeStamp}]}</td>
+            <td ><span class="{[{style(item.status)}]}">{[{item.startTime}]} - {[{item.endTime}]}</span><span class="edit-time-span" ng-click="editSlot(item.id, item.startTime, item.endTime)">{{'Edit'|trans}}</span></td>
+            <td>{[{item.status}]}</td>
+            <td><a href="/booking/client/{[{item.book.client.id}]}">{[{item.book.client.name}]}</a></td>
+            <td></td>
+          </tr>
+        </table>
         <tr>
-          <td class="add-slot">
-            <form>
-              <input maxlength="5" type="text"ng-model="slotStartTime" required>-
-              <input maxlength="5" type="text" ng-model="slotEndTime" required>
-            </form>
-            <span class="edit-time-span" ng-click="addSlot(slotStartTime, slotEndTime)">{{'Add'|trans}}</span>
+          <td>
+            <span id="add-slot-popup" class="edit-time-span ">{{'Add'|trans}}</span>
           </td>
         </tr>
       </table>
 
-
+      <div id="server-add-slot-win" class="modal add-slot-win" >
+        <!-- Modal content -->
+        <div class="modal-content  edit-time">
+          <form>
+            {{'Time'|trans}}:
+            <input maxlength="5" type="text"ng-model="newSlot.startTime" required> -
+            <input maxlength="5" type="text" ng-model="newSlot.endTime" required>
+            <br>
+            {{'Service'|trans}}:
+            <select ng-model="newSlot.serviceId">
+              {% for service in content.services %}
+                <option value="{{service.id}}">{{service.title}}</option>
+              {% endfor %}
+            </select>
+          </form><br>
+          <button id="cancel-add-slot" >{{'Cancel'| trans}}</button>
+          <button class="edit-time-span" ng-click="addSlot(newSlot)">{{'Add'|trans}}</button>
+        </div>
+      </div>
 
 
       <!-- The Modal -->
@@ -65,6 +84,7 @@
 
           </form>
           <button name="book-cancel" class="edit-cancel left" >{{'Cancel'| trans}}</button>
+
         </div>
       </div>
     </div> {# end of cntr #}

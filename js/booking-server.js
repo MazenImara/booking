@@ -112,16 +112,12 @@
             }
           }
 
-          $scope.addSlot = function (startTime, endTime) {
-            if (isTime(startTime) && isTime(endTime)) {
-              $http.post('/bookingAjax/addSlot', {
-                dayId: $scope.content.id,
-                serverId: serverId,
-                startTime: startTime,
-                endTime: endTime,
-                serviceId : drupalSettings.booking.content.serviceId,
-                dayDate: formatDate(selectedDay),
-              }).then(function (response) {
+          $scope.addSlot = function (newSlot) {
+            if (isTime(newSlot.startTime) && isTime(newSlot.endTime)) {
+              newSlot['serverId'] = serverId;
+              newSlot['dayDate'] = formatDate(selectedDay);
+
+              $http.post('/bookingAjax/addSlot', newSlot).then(function (response) {
 
                 $scope.dayData(formatDate(selectedDay));
 
@@ -199,6 +195,15 @@
 
         $('.cancel-text').click(function(event) {
           $('.cancel-book-btn').show();
+        });
+
+
+        // add slot popup
+        $('#add-slot-popup').click(function(event) {
+          $('#server-add-slot-win').show();
+        });
+        $('#cancel-add-slot').click(function(event) {
+          $('#server-add-slot-win').hide();
         });
 
 

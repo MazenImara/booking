@@ -1,0 +1,4 @@
+manage booking:
+  title: 'manage booking'
+  description: 'manage booking'
+  restrict access: TRUE

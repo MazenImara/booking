@@ -2,6 +2,11 @@
 <h1>{{content.service.title}}</h1>
 <h5> {{'Servers'|trans}}</h5>
 <ul>
+  {% for server in content.drupalServers %}
+    <li><a href="/booking/server/{{server.id}}">{{server.name}}</a></li>
+  {% else %}
+    <li><em>no user found</em></li>
+  {% endfor %}
   {% for server in content.servers %}
     <li><a href="/booking/server/{{server.id}}">{{server.name}}</a></li>
   {% endfor %}

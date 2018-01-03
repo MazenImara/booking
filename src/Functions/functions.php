@@ -2,6 +2,8 @@
 
 namespace Drupal\booking\Functions;
 
+use  \Drupal\user\Entity\User;
+
 class functions {
 
   static public function addService($title)
@@ -128,12 +130,14 @@ class functions {
     }
   }
 
-  static public function addDay($newDayTime, $config, $serviceId, $serverId)
+  static public function addDay($newDayTime, $serviceId, $serverId)
   {
+    /*
     if($config['daysOff'] != NULL and $config['daysOff'][date('N', $newDayTime)] != '0')
       $status = 0;
     else
-      $status = 1;
+      $status = 1;*/
+    $status = 1;
     \Drupal::database()->insert('booking_day')
       ->fields(['status', 'serviceId', 'date', 'timeStamp', 'serverId'])
       ->values([$status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime, $serverId])
@@ -159,10 +163,10 @@ class functions {
   }
 
   static public function addSlot($slot) {
-    $day = self::getDayById($slot['dayId']);
+    $day = self::getDayByDateServerIdServiceId($slot['dayDate'], $slot['serverId'], $slot['serviceId']);
     if ($day == Null) {
       $dayTime = strtotime($slot['dayDate']);
-      self::addDay($dayTime, self::config($slot['serverId']),$slot['serviceId'], $slot['serverId']);
+      self::addDay($dayTime,$slot['serviceId'], $slot['serverId']);
       $day = self::getDayById(self::getLastId('booking_day'));
     }
     $startTime =$day['timeStamp'] + self::timeToStamp($slot['startTime']);
@@ -326,6 +330,26 @@ class functions {
     return $day;
   }
 
+  static public function getDayByDateServerIdServiceId($date,$serverId, $serviceId) {
+    $timeStamp = strtotime(date($date));
+    $day = NULL;
+    $result = \Drupal::database()->select('booking_day', 'q')
+      ->fields('q', ['id', 'status', 'serviceId', 'timeStamp'])
+      ->condition('timeStamp', $timeStamp)
+      ->condition('serverId', $serverId)
+      ->condition('serviceId', $serviceId)
+      ->execute();
+      while ($row = $result->fetchAssoc()) {
+        $day = [
+          'id' => $row['id'],
+          'status' => $row['status'],
+          'serviceId' => $row['serviceId'],
+          'timeStamp' => $row['timeStamp'],
+        ];
+      }
+    return $day;
+  }
+
   static public function getSlots($dayId)
   {
     $slots = [];
@@ -426,6 +450,7 @@ class functions {
   }
   static public function getServer($id) {
     $server = NULL;
+    /*
     $result = \Drupal::database()->select('booking_server', 'q')
       ->fields('q', ['id', 'title', 'name', 'email', 'phone', 'password', 'status', 'serviceId'])
       ->condition('id', [$id])
@@ -442,6 +467,15 @@ class functions {
           'serviceId' => $row['serviceId'],
         ];
       }
+      */
+      $user = \Drupal\user\Entity\User::load($id);
+      $server = [
+        'id' => $id,
+        'title'=> 'test',
+        'name' => $user->getUsername(),
+        'email'=>'',
+        'phone'=> ''
+      ];
 
     return $server;
   }
@@ -623,23 +657,23 @@ class functions {
   }
 
   static public function getDayDataServer($data) {
-    $day = null;
+    $days = [];
     $result = \Drupal::database()->select('booking_day', 'q')
       ->fields('q', ['id', 'status', 'serviceId', 'timeStamp', "date"])
       ->condition('date', $data['date'])
       ->condition('serverId', $data['serverId'])
       ->execute();
     while ($row = $result->fetchAssoc()) {
-      $day = [
+      array_push($days, [
         'id' => $row['id'],
         'serviceId' => $row['serviceId'],
         'status' => $row['status'],
         'timeStamp' => $row['timeStamp'],
         'date' => $row['date'],
         'slots' => self::getSlotsByDayServer($row['id'], $data['serverId']),
-      ];
+      ]);
     }
-    return $day;
+    return $days;
 
   }
 
@@ -746,5 +780,20 @@ class functions {
     $config_factory->getEditable('booking.settings')->set($field['objType'], $fields)->save();
   }
 
+  static public function getDrupalUsers() {
+    $users = [];
+    $ids = \Drupal::entityQuery('user')
+    ->condition('status', 1)
+    ->condition('roles', 'rosenserien')
+    ->execute();
+    foreach ($ids as $id) {
+      $user = \Drupal\user\Entity\User::load($id);
+      array_push($users, [
+        'id' => $id,
+        'name' => $user->get('name')->value,
+      ]);
+    }
+    return $users;
+  }
 
 } //end of class

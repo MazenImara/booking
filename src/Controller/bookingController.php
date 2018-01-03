@@ -33,18 +33,34 @@ class bookingController extends ControllerBase {
     ];
   }
   public function admin() {
-    return [
-      '#attached' => [
-        'library' => [
-          'booking/booking_lib',
+    $user = \Drupal::currentUser();
+    //$userE =  \Drupal\user\Entity\User::load($user->id());
+    if (in_array('administrator', $user->getRoles())) {
+      return [
+        '#attached' => [
+          'library' => [
+            'booking/booking_lib',
+          ],
         ],
-      ],
-      '#theme'      => 'admin',
-      '#content'    => [
-        'services' => functions::getServices(),
-        'addServiceForm' => \Drupal::formBuilder()->getForm('Drupal\booking\Form\addServiceForm'),
-      ],
-    ];
+        '#theme'      => 'admin',
+        '#content'    => [
+          'services' => functions::getServices(),
+          'addServiceForm' => \Drupal::formBuilder()->getForm('Drupal\booking\Form\addServiceForm'),
+          'user' => $user->getRoles()[1],
+        ],
+      ];
+    }
+    else{
+      if(in_array('rosenserien', $user->getRoles())){
+        $response = new RedirectResponse('/booking/server/'.$user->id());
+        $response->send();
+      }
+      else {
+        return new JsonResponse(['status'=>$user->getRoles()]);
+      }
+    }
+
+
   }
 
   public function service($id) {
@@ -62,6 +78,7 @@ class bookingController extends ControllerBase {
           ->getForm('Drupal\booking\Form\addWorkDaysForm',$id),
         'service' => functions::getServices($id),
         'servers' => functions::getServiceServers($id),
+        'drupalServers' => functions::getDrupalUsers(),
         'last' => date("Y-m-d h:i:sa", strtotime("2017-W43-2")+(8 *60*60)) ,
       ],
     ];
@@ -87,6 +104,7 @@ class bookingController extends ControllerBase {
   }
 
   public function server($id) {
+    $user =  \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
     return [
       '#attached' => [
         'library' => [
@@ -106,6 +124,8 @@ class bookingController extends ControllerBase {
         'server' => functions::getServer($id),
         'addServerDayForm' => \Drupal::formBuilder()
           ->getForm('Drupal\booking\Form\addServerDayForm',$id),
+        'user' => $user->get('uid')->value,
+        'services' => functions::getServices(),
       ],
     ];
   }
