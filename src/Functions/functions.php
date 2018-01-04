@@ -95,18 +95,16 @@ class functions {
 
 
 
-  static public function addServerDay($serverId, $daysQuantity, $startDate)
-  {
+  static public function addServerDay($serverId, $daysQuantity, $startDate, $serviceId) {
     $config = self::config($serverId);
     $server = self::getServer($serverId);
     for ($i=0; $i < $daysQuantity; $i++) {
-      $startDate = strtotime(date('Y-m-d',$startDate)) ;
+      $startDate = strtotime(date('Y-m-d',$startDate));
       $day = self::getDay($server['id'], $startDate);
       if (!$day) {
-        self::addDay($startDate, $config, $server['serviceId'], $serverId);
+        self::addDay($startDate, $serviceId, $serverId, $config);
         $dayId = self::getLastId('booking_day');
         self::addSlots($config, $serverId, $dayId, $startDate);
-        drupal_set_message($dayId.' no');
       }
       else{
         if (!self::getSlots($day['id'])) {
@@ -130,14 +128,13 @@ class functions {
     }
   }
 
-  static public function addDay($newDayTime, $serviceId, $serverId)
+  static public function addDay($newDayTime, $serviceId, $serverId, $config)
   {
-    /*
+
     if($config['daysOff'] != NULL and $config['daysOff'][date('N', $newDayTime)] != '0')
       $status = 0;
     else
-      $status = 1;*/
-    $status = 1;
+      $status = 1;
     \Drupal::database()->insert('booking_day')
       ->fields(['status', 'serviceId', 'date', 'timeStamp', 'serverId'])
       ->values([$status, $serviceId, date("d-m-Y", $newDayTime), $newDayTime, $serverId])
@@ -199,12 +196,24 @@ class functions {
     self::changeSlotStatus($book['slotId'], 0);
   }
 
-  static public function deleteBook($slotId)
+  static public function deleteBooks($slotId)
   {
     \Drupal::database()->delete('booking_book', [])
       ->condition('slotId', $slotId)
       ->execute();
     self::changeSlotStatus($slotId, 1);
+  }
+
+  static public function deleteBook($slotId, $clientId)
+  {
+    \Drupal::database()->delete('booking_book', [])
+      ->condition('slotId', $slotId)
+      ->condition('clientId', $clientId)
+      ->execute();
+    $books = self::getBooksBySlotId($slotId);
+    if (!count($books)) {
+      self::changeSlotStatus($slotId, 1);
+    }
   }
 
   static public function changeSlotStatus($id, $status) {
@@ -354,7 +363,7 @@ class functions {
   {
     $slots = [];
     $result = \Drupal::database()->select('booking_slot', 'q')
-      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime', 'endTime'])
+      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime', 'endTime', 'max'])
       ->condition('dayId', [$dayId])
       ->execute();
       while ($row = $result->fetchAssoc()) {
@@ -366,6 +375,7 @@ class functions {
             'startTime' => $row['startTime'],
             'endTime' => $row['endTime'],
             'server' => self::getServer($row['serverId']),
+            'max' => $row['max'],
           ]);
       }
 
@@ -401,7 +411,7 @@ class functions {
   static public function getSlotsByDayServer($dayId, $serverId) {
     $slots = [];
     $result = \Drupal::database()->select('booking_slot', 'q')
-      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime', 'endTime'])
+      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime', 'endTime', 'max'])
       ->condition('serverId', $serverId)
       ->condition('dayId', $dayId)
       ->execute();
@@ -409,6 +419,7 @@ class functions {
         array_push($slots, [
             'id' => $row['id'],
             'period' => $row['period'],
+            'max' => $row['max'],
             'dayId' => $row['dayId'],
             'status' => $row['status'],
             'book' =>self::getBookBySlotId($row['id']),
@@ -428,7 +439,7 @@ class functions {
   static public function getSlotsById($id) {
     $slot = NULL;
     $result = \Drupal::database()->select('booking_slot', 'q')
-      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime', 'endTime'])
+      ->fields('q', ['id', 'period', 'dayId', 'status', 'serverId', 'startTime', 'endTime', 'max'])
       ->condition('id', $id)
       ->execute();
       while ($row = $result->fetchAssoc()) {
@@ -443,6 +454,7 @@ class functions {
             'endTime' => date("H:i",$row['endTime']),
             'server' => self::getServer($row['serverId']),
             'date' => date("D d M Y",$row['startTime']),
+            'max' => $row['max'],
           ];
       }
 
@@ -533,6 +545,23 @@ class functions {
     return $book;
   }
 
+  static public function getBooksBySlotId($slotId) {
+    $books = [];
+    $result = \Drupal::database()->select('booking_book', 'q')
+      ->fields('q', ['id', 'serviceId', 'clientId'])
+      ->condition('slotId', $slotId)
+      ->execute();
+    while ($row = $result->fetchAssoc()) {
+      array_push($books, [
+        'id' => $row['id'],
+        'slotId' => $slotId,
+        'serviceId' => $row['serviceId'],
+        'client' => self::getClient($row['clientId']),
+      ]);
+    }
+    return $books;
+  }
+
   static public function getClient($id) {
     $client = NULL;
     $result = \Drupal::database()->select('booking_client', 'q')
@@ -591,22 +620,37 @@ class functions {
 
 
   static public function book($book) {
-    if (self::isSlotBooked($book) == NULL && self::isEmailExist($book['client']['email'], 'booking_client') != NULL) {
-      $a = ['book' => 'You have booked'];
-      self::addBook($book);
 
+    $books = self::getBooksBySlotId($book['slotId']);
+    $slot = self::getSlotsById($book['slotId']);
+
+    if (self::isSlotBooked($book) == NULL) {
+      if (self::isEmailExist($book['client']['email'], 'booking_client') != NULL) {
+        $a = ['book' => 'You have booked'];
+        self::addBook($book);
+      }
     }
     else{
-      $a = $book['client'];
+      if ($slot['max'] > count($books)) {
+        $isClientBook = true;
+        foreach ($books as $item) {
+          if ($item['client']['email'] == $book['client']['email']) {
+            $isClientBook = false;
+          }
+        }
+        if ($isClientBook) {
+          self::addBook($book);
+          $a = ['book' => 'yes can'];
+        }
+      }
     }
-
     return $a;
   }
 
   static public function cancel($book) {
-    if (self::isSlotBooked($book) != NULL && $book['client']['id'] == self::getBookBySlotId($book['slotId'])['client']['id']) {
+    if (self::isSlotBooked($book) != NULL) {
       $a = ['book' => 'You have canceled'];
-      self::deleteBook($book['slotId']);
+      self::deleteBook($book['slotId'], $book['client']['id']);
 
     }
     else{
@@ -706,9 +750,15 @@ class functions {
             array_push($allSlots, $slot);
           }
           else{
-            if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
+            $books = self::getBooksBySlotId($slot['id']);
+            if ($slot['max'] > count($books)) {
               array_push($allSlots, $slot);
-            }
+            }/*
+            else{
+              if ($data['client']['id'] == self::getBookBySlotId($slot['id'])['client']['id']) {
+                array_push($allSlots, $slot);
+              }
+            }*/
           }
         }
         $days[0]['slots'] = $allSlots;
@@ -745,7 +795,7 @@ class functions {
   }
 
 
-  static public function editSlotTime($slotId, $startTime, $endTime) {
+  static public function editSlotTime($slotId, $startTime, $endTime, $max) {
     $slot = self::getSlotsById($slotId);
     $start = explode(':', $startTime);
     $end = explode(':', $endTime);
@@ -753,7 +803,11 @@ class functions {
     $endTimeS = strtotime(date('Y-m-d',$slot['startTimeStamp']))+ ($end[0] * 60 * 60) + ($end['1'] * 60);
     \Drupal::database()->update('booking_slot')
       ->condition('id', $slotId)
-      ->fields(['startTime' => $startTimeS,  'endTime' => $endTimeS])
+      ->fields([
+        'startTime' => $startTimeS,
+        'endTime' => $endTimeS,
+        'max' => $max,
+      ])
       ->execute();
     return [];
   }
@@ -784,7 +838,7 @@ class functions {
     $users = [];
     $ids = \Drupal::entityQuery('user')
     ->condition('status', 1)
-    ->condition('roles', 'rosenserien')
+    ->condition('roles', 'booking')
     ->execute();
     foreach ($ids as $id) {
       $user = \Drupal\user\Entity\User::load($id);

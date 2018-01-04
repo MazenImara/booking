@@ -93,10 +93,6 @@ function booking_schema() {
           'unsigned' => TRUE,
           'not null' => TRUE,
         ],
-        'day' => [
-          'type' => 'int',
-          'not null' => TRUE,
-        ],
         'status' => [
           'type' => 'int',
           'size' => 'tiny',
@@ -240,6 +236,7 @@ function booking_schema() {
         'period' => [
           'type' => 'int',
           'not null' => TRUE,
+          'default' => 1,
         ],
         'dayId' => [
           'type' => 'int',
@@ -259,6 +256,16 @@ function booking_schema() {
           'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
+        ],
+        'endTime' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'max' => [
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 1,
         ],
       ],
       'primary key' => ['id'],

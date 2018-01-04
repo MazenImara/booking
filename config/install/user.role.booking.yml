@@ -1,0 +1,9 @@
+langcode: sv
+status: true
+dependencies: {  }
+id: booking
+label: booking
+weight: 6
+is_admin: null
+permissions:
+  - 'manage booking'

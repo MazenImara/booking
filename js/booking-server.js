@@ -70,10 +70,11 @@
               return '';
           }
 
-          $scope.editSlot = function (slotId,start, end) {
+          $scope.editSlot = function (slotId,start, end, max) {
             $scope.startTime = start;
             $scope.endTime = end;
             $scope.slotId = slotId;
+            $scope.max = max;
             $('#server-edit-slot').show();
           }
 
@@ -97,9 +98,9 @@
             });
           }
 
-          $scope.saveSlot = function (slotId, startTime, endTime) {
+          $scope.saveSlot = function (slotId, startTime, endTime, max) {
             if (isTime(startTime) && isTime(endTime)){
-              $http.post('/bookingAjax/editSlotTime', {slotId: slotId, startTime: startTime, endTime: endTime}).then(function (response) {
+              $http.post('/bookingAjax/editSlotTime', {slotId: slotId, startTime: startTime, endTime: endTime, max: max}).then(function (response) {
                 $('#server-edit-slot').hide();
                 $scope.dayData(formatDate(selectedDay));
                 $('.toHide').hide();

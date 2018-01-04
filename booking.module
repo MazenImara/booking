@@ -30,6 +30,11 @@ function booking_theme($existing, $type, $theme, $path) {
         'content' => 'from hook module',
       ],
     ],
+    'clients' => [
+      'variables' => [
+        'content' => 'from hook module',
+      ],
+    ],
     'client' => [
       'variables' => [
         'content' => 'from hook module',

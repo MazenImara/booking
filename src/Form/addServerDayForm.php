@@ -80,6 +80,15 @@ class addServerDayForm extends ConfigFormBase {
       '#size' => 4,
       '#required' => "True",
     ];
+    $options = [];
+    foreach (functions::getServices() as $item) {
+      $options[$item['id']] = $item['title'];
+    }
+    $form['serviceId'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Service'),
+      '#options' => $options,
+    ];
 
     $form['startDate'] = [
       '#type' => 'textfield',
@@ -174,7 +183,7 @@ class addServerDayForm extends ConfigFormBase {
 
       $startDate = strtotime(date($form_state->getValues()['startDate']));
 
-      functions::addServerDay($form_state->getValues()['serverId'], $form_state->getValues()['quantity'], $startDate);
+      functions::addServerDay($form_state->getValues()['serverId'], $form_state->getValues()['quantity'], $startDate, $form_state->getValues()['serviceId']);
 
 
 

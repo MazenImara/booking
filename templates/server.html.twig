@@ -1,10 +1,8 @@
-{{content.user}}
-{{content.services[0].title}}
 
 <div class="booking-server">
 
 
-  {{content.server.name}}<br>
+  <h4>{{content.server.name}}</h4>
 
 
   <dir ng-app='bookingServer'>
@@ -24,17 +22,12 @@
           <th><input type="text" id="popupDatepicker" ng-model="select"><button ng-click="toDay()">{{'Today'|trans}}</button></th>
           <th><button ng-click="next()">{{'Next'|trans}}</button></th>
         </tr>
-        <tr>
-          <th>{{'Period'|trans}}</th>
-          <th>{{'Status'|trans}}</th>
-          <th>{{'Name'|trans}}</th>
-        </tr>
         <table ng-repeat="day in content">
           <tr ng-repeat="item in day.slots | filter:date | orderBy: 'startTimeStamp'" >
             <td class="hidden">{[{item.startTimeStamp}]}</td>
-            <td ><span class="{[{style(item.status)}]}">{[{item.startTime}]} - {[{item.endTime}]}</span><span class="edit-time-span" ng-click="editSlot(item.id, item.startTime, item.endTime)">{{'Edit'|trans}}</span></td>
+            <td ><span class="{[{style(item.status)}]}">{[{item.startTime}]} - {[{item.endTime}]}</span><span class="edit-time-span" ng-click="editSlot(item.id, item.startTime, item.endTime, item.max)">{{'Edit'|trans}}</span></td>
             <td>{[{item.status}]}</td>
-            <td><a href="/booking/client/{[{item.book.client.id}]}">{[{item.book.client.name}]}</a></td>
+            <td><a href="/booking/clients/{[{item.id}]}" ng-if="item.status == 0">{{'Clients'|trans}}</a></td>
             <td></td>
           </tr>
         </table>
@@ -71,10 +64,12 @@
         <!-- Modal content -->
         <div class="modal-content  edit-time">
           <form id="edit-form" class="edit-form">
-            <input class="time" type="hidden" ng-model="slotId">
+            <input type="hidden" ng-model="slotId">
             <input class="time" type="text" ng-model="startTime"> -
             <input class="time" type="text" ng-model="endTime">
-            <input id="" name="" type="submit" class="save-btn right" value="{{'Save'| trans}}" ng-click="saveSlot(slotId,startTime,endTime)">
+            <input id="" name="" type="submit" class="save-btn right" value="{{'Save'| trans}}" ng-click="saveSlot(slotId,startTime,endTime, max)">
+            <br>
+            {{'Max'|trans}}: <input class="time" type="text" ng-model="max">
             <br>
             <span class="cancel-text">{{'Cancel book'|trans}}</span>
             <input id="" name="" type="submit" ng-click="cancelBook(slotId)" class="cancel-book-btn toHide right" value="{{'Confirm cancel'| trans}}" ng-click="cancelBook(slotId)">

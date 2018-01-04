@@ -48,13 +48,13 @@
       <tr ng-repeat="slot in content.slots | orderBy: 'startTimeStamp'">
         <td>{[{slot.start}]} - {[{slot.end}]}</td>
         <td>{[{slot.server.name}]}</td>
-        <td ng-if="slot.status == 1">
+        <td ng-if="slot.status == 1 || true">
           <button class="book-slot" id="{[{slot.id}]}" ng-click="book(slot.id)">
             <input type="hidden" value="{&quot;slotId&quot;:{[{slot.id}]},&quot;serviceId&quot;:1}">
             Book
           </button>
         </td>
-        <td ng-if="slot.status == 0">
+        <td ng-if="slot.status == 0 && false">
           <button class="book-slot" id="{[{slot.id}]}" ng-click="cancel(slot.id)">
             <input type="hidden" value="{&quot;slotId&quot;:{[{slot.id}]},&quot;serviceId&quot;:1}">
             Cancel

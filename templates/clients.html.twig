@@ -1,0 +1,4 @@
+
+{% for item in content.books %}
+  <a href="/booking/client/{{item.client.id}}">{{item.client.name}}</a><br>
+{% endfor %}

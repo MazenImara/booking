@@ -1,0 +1,18 @@
+booking.admin:
+  title: 'Booking manage'
+  description: ''
+  parent: system.admin
+  route_name: booking.admin
+
+booking.settings:
+  title: 'setting'
+  description: ''
+  parent: booking.admin
+  route_name: booking.setting
+
+booking.booking:
+  title: 'Booking'
+  description: ''
+  parent: booking.admin
+  route_name: booking.bookingServices
+

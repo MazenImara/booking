@@ -112,7 +112,7 @@ class bookingAjaxController extends ControllerBase {
     $request = json_decode(file_get_contents("php://input"));
     $slotId = $request->slotId;
     //return new JsonResponse($slotId);
-    return new JsonResponse(functions::deleteBook($slotId));
+    return new JsonResponse(functions::deleteBooks($slotId));
   }
 
   public function editSlotTime() {
@@ -120,8 +120,9 @@ class bookingAjaxController extends ControllerBase {
     $slotId = $request->slotId;
     $startTime = $request->startTime;
     $endTime = $request->endTime;
+    $max = $request->max;
     //return new JsonResponse($slotId);
-    return new JsonResponse(functions::editSlotTime($slotId, $startTime, $endTime));
+    return new JsonResponse(functions::editSlotTime($slotId, $startTime, $endTime, $max));
   }
 
 /**

@@ -51,7 +51,7 @@ class bookingController extends ControllerBase {
       ];
     }
     else{
-      if(in_array('rosenserien', $user->getRoles())){
+      if(in_array('booking', $user->getRoles())){
         $response = new RedirectResponse('/booking/server/'.$user->id());
         $response->send();
       }
@@ -59,8 +59,6 @@ class bookingController extends ControllerBase {
         return new JsonResponse(['status'=>$user->getRoles()]);
       }
     }
-
-
   }
 
   public function service($id) {
@@ -79,7 +77,6 @@ class bookingController extends ControllerBase {
         'service' => functions::getServices($id),
         'servers' => functions::getServiceServers($id),
         'drupalServers' => functions::getDrupalUsers(),
-        'last' => date("Y-m-d h:i:sa", strtotime("2017-W43-2")+(8 *60*60)) ,
       ],
     ];
   }
@@ -126,6 +123,28 @@ class bookingController extends ControllerBase {
           ->getForm('Drupal\booking\Form\addServerDayForm',$id),
         'user' => $user->get('uid')->value,
         'services' => functions::getServices(),
+      ],
+    ];
+  }
+
+  public function clients($slotId) {
+    return [
+      '#attached' => [
+        'library' => [
+          'booking/booking_server',
+        ],
+        'drupalSettings' => [
+          'booking' => [
+            'content' => [
+              'serverId' => '$id',
+              'serviceId'=> '',
+            ],
+          ]
+        ]
+      ],
+      '#theme'      => 'clients',
+      '#content'    => [
+        'books' => functions::getBooksBySlotId($slotId),
       ],
     ];
   }
